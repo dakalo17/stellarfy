@@ -12,6 +12,9 @@
         android:theme="@style/Theme.ShopAndroid"
         tools:targetApi="31">
         <activity
+            android:name=".activities.SignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.LoginActivity"
             android:exported="false" />
         <activity

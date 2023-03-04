@@ -100,7 +100,7 @@
         android:layout_below="@id/imgBtnForgot"
         android:layout_marginStart="50dp"
 
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="50dp"
         android:text="@string/login"
         app:cornerRadius="30dp"/>
@@ -109,7 +109,7 @@
         android:id="@+id/imgBtnNotSignedUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:background="@android:color/transparent"
         android:src="@drawable/ic_not_signed_up"
 
         android:layout_marginTop="10dp"
@@ -118,7 +118,43 @@
         />
 
     <ImageView
+        android:id="@+id/imgOrDivider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_or_divider" />
+        android:src="@drawable/ic_or_divider"
+        android:layout_marginTop="40dp"
+        android:layout_below="@id/imgBtnNotSignedUp"
+        />
+
+    <ImageButton
+        android:id="@+id/imgBtnGoogle"
+        android:layout_width="wrap_content"
+        android:background="@android:color/transparent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imgOrDivider"
+        android:layout_toStartOf="@id/tempView"
+
+        android:layout_marginHorizontal="50dp"
+        android:src="@drawable/ic_google"
+        />
+    <View
+        android:id="@+id/tempView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:layout_centerInParent="true"
+
+        android:layout_below="@id/imgOrDivider"
+        />
+    <ImageButton
+        android:id="@+id/imgBtnWindows"
+        android:background="@android:color/transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imgOrDivider"
+
+        android:layout_marginHorizontal="50dp"
+        android:layout_toEndOf="@id/tempView"
+        android:src="@drawable/ic_windows"
+        />
 </RelativeLayout>

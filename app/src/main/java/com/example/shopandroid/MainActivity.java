@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.shopandroid.activities.LoginActivity;
+import com.example.shopandroid.activities.SignUpActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,6 +16,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        startActivity(new Intent(MainActivity.this, SignUpActivity.class));
     }
 }
