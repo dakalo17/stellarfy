@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back"
+    tools:context=".activities.LoginActivity">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/stellarfy" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tvUsernameContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:hint="@string/username"
+        android:layout_marginTop="260dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+
+        app:endIconMode="clear_text"
+
+
+        app:boxCornerRadiusTopEnd="30dp"
+        app:boxCornerRadiusTopStart="30dp"
+        app:boxCornerRadiusBottomStart="30dp"
+        app:boxCornerRadiusBottomEnd="30dp"
+
+        app:startIconDrawable="@drawable/ic_username"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tvUsername"
+            android:inputType="textEmailAddress"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tvPasswordContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:hint="@string/password"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+
+
+        app:boxCornerRadiusTopEnd="30dp"
+        app:boxCornerRadiusTopStart="30dp"
+        app:boxCornerRadiusBottomStart="30dp"
+        app:boxCornerRadiusBottomEnd="30dp"
+        app:startIconDrawable="@drawable/ic_shieldlock"
+
+        app:endIconMode="password_toggle"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+        android:layout_below="@id/tvUsernameContainer"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tvPassword"
+
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/imgBtnForgot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_forgot_password"
+
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/tvPasswordContainer"
+        android:layout_marginStart="70dp"
+
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+
+        android:layout_below="@id/imgBtnForgot"
+        android:layout_marginStart="50dp"
+
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="50dp"
+        android:text="@string/login"
+        app:cornerRadius="30dp"/>
+
+    <ImageButton
+        android:id="@+id/imgBtnNotSignedUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:src="@drawable/ic_not_signed_up"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="70dp"
+        android:layout_below="@id/btnLogin"
+        />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_or_divider" />
+</RelativeLayout>
