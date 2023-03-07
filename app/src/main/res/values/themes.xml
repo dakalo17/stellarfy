@@ -14,9 +14,4 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="TextView" parent="Base.Widget.MaterialComponents.TextInputLayout">
-
-
-
-    </style>
 </resources>

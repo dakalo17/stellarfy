@@ -1,5 +1,22 @@
 package com.example.shopandroid.services.endpoints;
 
-public interface IUserEndpoints {
+import com.example.shopandroid.models.JSONObjects.User;
+import com.example.shopandroid.models.jwt.JwtRefresh;
+import com.example.shopandroid.utilities.Endpoints;
 
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
+
+public interface IUserEndpoints {
+    @Headers("Content-Type: application/json")
+    @POST(Endpoints.LOGIN_URI)
+    Call<JwtRefresh> login(@Header("Authorization") String authorization, @Body User user);
+
+
+    @Headers("Content-Type: application/json")
+    @POST(Endpoints.REFRESH_TOKEN_URI)
+    Call<JwtRefresh> refreshToken(@Body JwtRefresh jwtRefresh);
 }

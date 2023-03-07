@@ -9,7 +9,7 @@
     <option name="autoFetchIntervalMinutesOverride">
       <IntValueOverride>
         <option name="enabled" value="true" />
-        <option name="value" value="81" />
+        <option name="value" value="121" />
       </IntValueOverride>
     </option>
     <option name="autoFetchOnBranchSwitchOverride">
