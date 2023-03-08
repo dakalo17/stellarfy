@@ -10,6 +10,7 @@ import com.example.shopandroid.activities.LoginActivity;
 import com.example.shopandroid.models.JSONObjects.User;
 import com.example.shopandroid.models.jwt.JwtRefresh;
 import com.example.shopandroid.services.DecodeToken;
+import com.example.shopandroid.services.endpoints.IRefreshToken;
 import com.example.shopandroid.services.endpoints.IUserEndpoints;
 import com.example.shopandroid.services.session.RefreshTokenSessionManagement;
 import com.example.shopandroid.services.session.UserSessionManagement;
@@ -67,27 +68,5 @@ public class UserService<T extends IUserEndpoints> extends BaseService<T>{
         });
 
     }
-    public void RefreshToken(JwtRefresh jwtTokenRefreshToken){
-        Call<JwtRefresh> call = api.refreshToken(jwtTokenRefreshToken);
 
-        call.enqueue(new Callback<JwtRefresh>() {
-            @Override
-            public void onResponse(Call<JwtRefresh> call, Response<JwtRefresh> response) {
-                if(!response.isSuccessful())return;
-
-                JwtRefresh jwtRefreshRes = response.body();
-
-                if(jwtRefreshRes == null) return;
-
-                User loggedUser = DecodeToken.DecodeUserClaims(jwtRefreshRes.token);
-                new UserSessionManagement(_activity.getApplicationContext(),true).
-                        saveSession(loggedUser);
-            }
-
-            @Override
-            public void onFailure(Call<JwtRefresh> call, Throwable t) {
-                Log.e("UserService",t.getLocalizedMessage());
-            }
-        });
-    }
 }

@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.example.shopandroid.HomeActivity;
 import com.example.shopandroid.activities.LoginActivity;
+import com.example.shopandroid.activities.NavigationActivity;
 import com.example.shopandroid.models.JSONObjects.AbstractResponse;
 import com.example.shopandroid.services.endpoints.ITestEndpoints;
 import com.example.shopandroid.services.session.UserSessionManagement;
@@ -42,6 +43,7 @@ public class TestService<T extends ITestEndpoints> extends BaseService<T> {
 
                 final String pre = textView.getText().toString();
                 textView.setText(res == null ? pre: res.response);
+                _activity.startActivity(new Intent(_activity, NavigationActivity.class));
 
             }
 

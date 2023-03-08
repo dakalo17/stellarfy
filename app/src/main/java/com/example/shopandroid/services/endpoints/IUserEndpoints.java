@@ -10,13 +10,11 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public interface IUserEndpoints {
+public interface IUserEndpoints extends IRefreshToken{
     @Headers("Content-Type: application/json")
     @POST(Endpoints.LOGIN_URI)
     Call<JwtRefresh> login(@Header("Authorization") String authorization, @Body User user);
 
 
-    @Headers("Content-Type: application/json")
-    @POST(Endpoints.REFRESH_TOKEN_URI)
-    Call<JwtRefresh> refreshToken(@Body JwtRefresh jwtRefresh);
+
 }

@@ -9,4 +9,7 @@
     <string name="first_name">First Name</string>
     <string name="invalid_email">Invalid Email</string>
     <string name="password_does_not_match">Password does not match!</string>
+    <string name="cart">Cart</string>
+    <string name="profile">Profile</string>
+    <string name="search">Search</string>
 </resources>

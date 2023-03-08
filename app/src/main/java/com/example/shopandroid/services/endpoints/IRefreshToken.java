@@ -1,15 +1,15 @@
 package com.example.shopandroid.services.endpoints;
 
-import com.example.shopandroid.models.JSONObjects.AbstractResponse;
+import com.example.shopandroid.models.jwt.JwtRefresh;
 import com.example.shopandroid.utilities.Endpoints;
 
 import retrofit2.Call;
-import retrofit2.http.GET;
+import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public interface ITestEndpoints extends IRefreshToken{
+public interface IRefreshToken {
     @Headers("Content-Type: application/json")
-    @GET("api/WeatherForecast/GetTest")
-    Call<AbstractResponse> getTest();
+    @POST(Endpoints.REFRESH_TOKEN_URI)
+    Call<JwtRefresh> refreshToken(@Body JwtRefresh jwtRefresh);
 }
