@@ -54,11 +54,16 @@ public abstract class BaseService<T extends IRefreshToken> {
 
 
              Interceptor authorization = new Interceptor() {
+
                  @NonNull
                  @Override
                  public Response intercept(@NonNull Chain chain) throws IOException {
+
                      final User user = userSessionManagement.getSession();
+                     //receives request data of a service
                      Request req = chain.request();
+
+                     //attaches a header so to try to prevent 401/unauthorized response
                      Request.Builder reqBuilder = req
                              .newBuilder()
                              .header("Authorization", "Bearer " + user.jwtToken)
@@ -70,18 +75,22 @@ public abstract class BaseService<T extends IRefreshToken> {
 
 
                      //if its unAuthorized -> refresh the token
+
                      if(res.code() == 401){
+                         //makes sure that tasks finish before they continue
                          synchronized (this){
                              JwtRefresh jwtRefresh = null;
                              RefreshTokenSessionManagement refreshTokenSession =
                                      new RefreshTokenSessionManagement(_activity.getApplicationContext(),false);
+
+                             //retrieve the current expired access token for server to extract
                              if(refreshTokenSession.isValidSession()) {
                                  jwtRefresh = new JwtRefresh();
                                  jwtRefresh.refreshToken = refreshTokenSession.getSession();
                                  jwtRefresh.token = user.jwtToken;
                              }
 
-                             JwtRefresh jwtRefresh1 = RefreshToken(jwtRefresh);
+                             RefreshToken(jwtRefresh);
 
                          }
                      }
@@ -102,7 +111,7 @@ public abstract class BaseService<T extends IRefreshToken> {
         api = retrofit.create(classObj);
     }
 
-
+    @Deprecated
     private void RefreshTokenAsync(JwtRefresh jwtTokenRefreshToken){
 
         //to make sure something is put instead of null
@@ -139,9 +148,9 @@ public abstract class BaseService<T extends IRefreshToken> {
             }
         });
     }
-    private JwtRefresh RefreshToken(JwtRefresh jwtTokenRefreshToken){
+    private void RefreshToken(JwtRefresh jwtTokenRefreshToken){
 
-        //to make sure something is put instead of null
+        //re create the 2,so that there is no interceptor for them
         Retrofit tempRetrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -149,33 +158,24 @@ public abstract class BaseService<T extends IRefreshToken> {
 
         T tempApi = tempRetrofit.create(_classObj);
 
+        //to make sure something is put instead of null
         Call<JwtRefresh> call = tempApi.refreshToken(jwtTokenRefreshToken != null ? jwtTokenRefreshToken : new JwtRefresh());
-//        retrofit2.Response<JwtRefresh> execute = null;
-//        try {
-//            execute = call.execute();
-//        }catch (IOException ex){
-//            Log.e("",ex.getLocalizedMessage());
-//        }
-//        if(execute != null && execute.isSuccessful())
-//            return execute.body();
-//
-//        return null;
 
-
-//        Call<T> call = nul;
         retrofit2.Response<JwtRefresh> res ;
-        JwtRefresh jwtRefreshRes ;
-        try {
 
-           res =  call.execute();
-            jwtRefreshRes = saveToken(res);
+        try {
+            //execute the request synchronously since
+            res =  call.execute();
+            //save token to shared pref
+            JwtRefresh jwtRefreshRes  = saveToken(res);
+
+            Log.e("Received token -> ",jwtRefreshRes != null ? jwtRefreshRes.token:"");
 
         } catch (IOException e) {
             Log.e("UserService",e.getLocalizedMessage());
-            return null;
         }
 
-        return jwtRefreshRes;
+
     }
 
     private JwtRefresh saveToken(retrofit2.Response<JwtRefresh> response){
