@@ -9,14 +9,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shopandroid.activities.LoginActivity;
+import com.example.shopandroid.models.jwt.JwtRefresh;
 import com.example.shopandroid.services.endpoints.ITestEndpoints;
 import com.example.shopandroid.services.implementations.TestService;
+import com.example.shopandroid.services.session.RefreshTokenSessionManagement;
 import com.example.shopandroid.services.session.UserSessionManagement;
 
 public class HomeActivity extends AppCompatActivity {
 
     private TextView textView;
-    TestService<ITestEndpoints> _testService;
+    TestService _testService;
     private Button btnClick;
 
     @Override
@@ -35,7 +37,16 @@ public class HomeActivity extends AppCompatActivity {
     private void init(){
         btnClick = findViewById(R.id.btnClick);
         textView = findViewById(R.id.textView);
-        _testService = new TestService<>(this,ITestEndpoints.class);
+
+        JwtRefresh jwtRefresh = null;
+        RefreshTokenSessionManagement refreshTokenSession = new RefreshTokenSessionManagement(getApplicationContext(),false);
+        if(refreshTokenSession.isValidSession()) {
+            jwtRefresh = new JwtRefresh();
+            jwtRefresh.refreshToken = refreshTokenSession.getSession();
+            jwtRefresh.token = null;
+        }
+
+        _testService = new TestService(this);
     }
     private void events() {
         btnClick.setOnClickListener(e->{

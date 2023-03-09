@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import com.example.shopandroid.models.JSONObjects.User;
 import com.google.gson.Gson;
 
-public class UserSessionManagement {
+public class UserSessionManagement implements ISessionManagement<User>{
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     
@@ -26,27 +26,30 @@ public class UserSessionManagement {
             removeSession();
     }
 
+    @Override
     public void saveSession(User user){
         String json = _gson.toJson(user);
         editor.putString(SESSION_KEY,json).commit();
     }
-
+    @Override
     public boolean editSession(User user){
         String json = _gson.toJson(user);
         return editor.putString(SESSION_KEY,json).commit();
     }
-
+    @Override
     public User getSession(){
         String json = sharedPreferences.getString(SESSION_KEY,DEFAULT_JSON_STRING);
         User user = _gson.fromJson(json,User.class);
         return user;
     }
+    @Override
     public void removeSession() {
         editor.putString(SESSION_KEY,DEFAULT_JSON_STRING).commit();
     }
 
+    @Override
     public boolean isValidSession(){
         User user = getSession();
-        return !user.isNull();
+        return user != null && !user.isNull();
     }
 }

@@ -3,11 +3,10 @@ package com.example.shopandroid.services.session;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.shopandroid.models.JSONObjects.User;
 import com.example.shopandroid.models.jwt.RefreshToken;
 import com.google.gson.Gson;
 
-public class RefreshTokenSessionManagement {
+public class RefreshTokenSessionManagement implements ISessionManagement<RefreshToken>{
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
@@ -23,22 +22,30 @@ public class RefreshTokenSessionManagement {
         if(firstRun)
             removeSession();
     }
-
+    @Override
     public void saveSession(RefreshToken refreshToken){
         String json = _gson.toJson(refreshToken);
         editor.putString(SESSION_KEY,json).commit();
     }
-
+    @Override
     public boolean editSession(RefreshToken refreshToken){
         String json = _gson.toJson(refreshToken);
         return editor.putString(SESSION_KEY,json).commit();
     }
-
+    @Override
     public RefreshToken getSession(){
         String json = sharedPreferences.getString(SESSION_KEY,DEFAULT_JSON_STRING);
-        RefreshToken refreshToken = _gson.fromJson(json,RefreshToken.class);
-        return refreshToken;
+
+
+        return _gson.fromJson(json,RefreshToken.class);
     }
+
+    @Override
+    public boolean isValidSession() {
+        RefreshToken refreshToken = getSession();
+        return refreshToken !=null && !refreshToken.isNull();
+    }
+    @Override
     public void removeSession() {
         editor.putString(SESSION_KEY,DEFAULT_JSON_STRING).commit();
     }

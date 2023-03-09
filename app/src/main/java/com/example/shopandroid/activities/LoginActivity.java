@@ -11,8 +11,11 @@ import android.widget.Toast;
 import com.example.shopandroid.HomeActivity;
 import com.example.shopandroid.R;
 import com.example.shopandroid.models.JSONObjects.User;
+import com.example.shopandroid.models.jwt.JwtRefresh;
+import com.example.shopandroid.models.jwt.RefreshToken;
 import com.example.shopandroid.services.endpoints.IUserEndpoints;
 import com.example.shopandroid.services.implementations.UserService;
+import com.example.shopandroid.services.session.RefreshTokenSessionManagement;
 import com.example.shopandroid.services.session.UserSessionManagement;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -32,15 +35,16 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText tvPassword;
     private TextInputLayout tvPasswordContainer;
 
-    private UserService<IUserEndpoints> _userService;
+    private UserService _userService;
+    private UserSessionManagement _userSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
-        if(new UserSessionManagement(getApplicationContext(),false).isValidSession()) {
+        _userSession =new UserSessionManagement(getApplicationContext(),false);
+        if(_userSession.isValidSession()) {
             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
         }
         init();
@@ -57,7 +61,11 @@ public class LoginActivity extends AppCompatActivity {
         tvPassword = findViewById(R.id.tvPassword);
         tvPasswordContainer = findViewById(R.id.tvPasswordContainer);
 
-        _userService = new UserService<>(this,IUserEndpoints.class);
+        RefreshTokenSessionManagement refreshTokenSession =
+                new RefreshTokenSessionManagement(getApplicationContext(),false);
+
+
+        _userService = new UserService(this);
 
     }
     private void start() {

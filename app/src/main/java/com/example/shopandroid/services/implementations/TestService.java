@@ -9,6 +9,7 @@ import com.example.shopandroid.HomeActivity;
 import com.example.shopandroid.activities.LoginActivity;
 import com.example.shopandroid.activities.NavigationActivity;
 import com.example.shopandroid.models.JSONObjects.AbstractResponse;
+import com.example.shopandroid.models.jwt.JwtRefresh;
 import com.example.shopandroid.services.endpoints.ITestEndpoints;
 import com.example.shopandroid.services.session.UserSessionManagement;
 
@@ -17,9 +18,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TestService<T extends ITestEndpoints> extends BaseService<T> {
-    public TestService(AppCompatActivity activity, Class<T> classObj) {
-        super(activity, classObj);
+public class TestService extends BaseService<ITestEndpoints> {
+    public TestService(AppCompatActivity activity) {
+        super(activity, ITestEndpoints.class);
     }
 
     public void getTest(TextView textView){
@@ -29,21 +30,25 @@ public class TestService<T extends ITestEndpoints> extends BaseService<T> {
             @Override
             public void onResponse(Call<AbstractResponse> call, Response<AbstractResponse> response) {
 
-                int code = response.raw().code();
-
-                if(code == 401){
-                    //then logg out
-                    new UserSessionManagement(_activity.getApplicationContext(),false).
-                            removeSession();
-                    _activity.startActivity(new Intent(_activity, HomeActivity.class));
-
+//                int code = response.raw().code();
+//
+//                if(code == 401){
+//                    //then logg out
+//                    new UserSessionManagement(_activity.getApplicationContext(),false).
+//                            removeSession();
+//                    //_activity.startActivity(new Intent(_activity, HomeActivity.class));
+//
+//                }
+                if(!response.isSuccessful())
+                {
+                    getTest(textView);
+                    return;
                 }
-                if(!response.isSuccessful())return;
                 AbstractResponse res = response.body();
 
                 final String pre = textView.getText().toString();
                 textView.setText(res == null ? pre: res.response);
-                _activity.startActivity(new Intent(_activity, NavigationActivity.class));
+//                _activity.startActivity(new Intent(_activity, NavigationActivity.class));
 
             }
 

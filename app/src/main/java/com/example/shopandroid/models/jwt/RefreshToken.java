@@ -6,11 +6,17 @@ public class RefreshToken {
     @SerializedName("fkUserId")
     public int fkUserId;
     @SerializedName("rToken")
-    public String rToken;
+    public String rToken= "";;
     @SerializedName("key")
-    public String key;
+    public String key = "";
     @SerializedName("expiringDate")
     public String expiringDate;
 
     public String expiringDate_Date;
+
+    public boolean isNull(){
+        return  (expiringDate == null ||
+                (key == null || key.equals("")) ||
+                (rToken == null || rToken.equals("")));
+    }
 }

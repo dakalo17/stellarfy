@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.shopandroid.MainActivity;
 import com.example.shopandroid.activities.LoginActivity;
@@ -21,11 +22,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UserService<T extends IUserEndpoints> extends BaseService<T>{
+public class UserService extends BaseService<IUserEndpoints>{
 
 
-    public UserService(AppCompatActivity activity, Class<T> classObj) {
-        super(activity, classObj);
+    public UserService(AppCompatActivity activity) {
+        super(activity, IUserEndpoints.class);
         _activity=activity;
     }
 
@@ -46,6 +47,12 @@ public class UserService<T extends IUserEndpoints> extends BaseService<T>{
                 User loggedUser = DecodeToken.DecodeUserClaims(jwtPair.token);
                 UserSessionManagement userSessionManagement =
                         new UserSessionManagement(_activity.getApplicationContext(), true);
+
+                if(loggedUser == null) {
+                    _activity.startActivity(new Intent(_activity.getApplicationContext(), LoginActivity.class));
+                    Toast.makeText(_activity.getApplicationContext(), "Some error occurred", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 userSessionManagement.saveSession(loggedUser);
                 //save refresh token to session,ie local storage of device
                 ///Todo
