@@ -43,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+
         _userSession =new UserSessionManagement(getApplicationContext(),false);
         if(_userSession.isValidSession()) {
             startActivity(new Intent(LoginActivity.this, HomeActivity.class));

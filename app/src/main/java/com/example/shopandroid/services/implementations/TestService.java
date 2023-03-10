@@ -1,17 +1,11 @@
 package com.example.shopandroid.services.implementations;
 
-import android.content.Intent;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.shopandroid.HomeActivity;
-import com.example.shopandroid.activities.LoginActivity;
-import com.example.shopandroid.activities.NavigationActivity;
 import com.example.shopandroid.models.JSONObjects.AbstractResponse;
-import com.example.shopandroid.models.jwt.JwtRefresh;
 import com.example.shopandroid.services.endpoints.ITestEndpoints;
-import com.example.shopandroid.services.session.UserSessionManagement;
 
 import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
