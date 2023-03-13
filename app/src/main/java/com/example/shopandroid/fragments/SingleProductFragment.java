@@ -93,4 +93,6 @@ public class SingleProductFragment extends Fragment {
             //Todo add to cart
         });
     }
+
+
 }

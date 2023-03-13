@@ -52,28 +52,6 @@ public class CatalogFragment extends Fragment {
 
     private void populateProducts(View view) {
 
-
-//        productList = new ArrayList<>();
-//
-//        for (int i = 0; i < 10; i++) {
-//
-//            Product product = new Product();
-//
-//            product.name = i == 0 ? "Milky Way Globe" :UUID.randomUUID().toString();
-//            product.price = Random.Default.nextInt(100);
-//
-//            productList.add(product);
-//        }
-
-
-
-        
-        
-        //gridLayoutManager = new GridLayoutManager(requireActivity().getApplicationContext(),RECYCLER_VIEW_COLUMN_COUNT);
-        
-        //catalogProductAdapter = new CatalogProductAdapter(productList);
-        //rvCatalogCatalog.setLayoutManager(gridLayoutManager);
-        //rvCatalogCatalog.setAdapter(catalogProductAdapter);
         productService = new ProductService(this);
 
         rvCatalogCatalog = view.findViewById(R.id.rvCatalogCatalog);

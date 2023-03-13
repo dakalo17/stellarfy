@@ -53,15 +53,36 @@ public class CatalogProductAdapter extends RecyclerView.Adapter<CatalogProductAd
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
+
         holder.tvTitleProductSingleItem.setText( _productList.get(position).name);
         holder.tvProductPriceSingleItem.setText("R "+_productList.get(position).price);
 
-        Picasso.get().load(_productList.get(position).imageLink).
+        //caches the image in the main memory
+        Picasso picasso = Picasso.get();
+        picasso.setIndicatorsEnabled(false);
+        final int finalPosition = position;
+        picasso.load(_productList.get(position).imageLink).
                 error(R.drawable.ic_catalogbg).
-                into(holder.imgProductSingleItem, new Callback() {
+
+                fetch( new Callback() {
                     @Override
                     public void onSuccess() {
 
+                        picasso.load(_productList.get(finalPosition).imageLink).
+                                error(R.drawable.ic_catalogbg).
+                                into(holder.imgProductSingleItem, new Callback() {
+                                @Override
+                                public void onSuccess() {
+
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Log.e("Products catalog",e.getLocalizedMessage());
+                                    Toast.makeText(_context, "Error ->"+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
+                                }
+                        });
                     }
 
                     @Override
@@ -71,6 +92,7 @@ public class CatalogProductAdapter extends RecyclerView.Adapter<CatalogProductAd
 
                     }
                 });
+
 
         holder.mvcProductSingleItem.setOnClickListener(e->{
             Bundle bundle = new Bundle();
@@ -83,8 +105,11 @@ public class CatalogProductAdapter extends RecyclerView.Adapter<CatalogProductAd
 
             FragmentTransaction fragmentTransaction = _fragmentManager.beginTransaction();
 
+
+
             fragmentTransaction
                     .replace(R.id.flMain,_singleProductFragment)
+                    .addToBackStack("")
                     .commit();
 
         });
