@@ -1,6 +1,8 @@
 package com.example.shopandroid.services.implementations;
 
+import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,8 +15,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TestService extends BaseService<ITestEndpoints> {
-    public TestService(AppCompatActivity activity) {
-        super(activity, ITestEndpoints.class);
+    public TestService(Context context) {
+        super(context, ITestEndpoints.class);
     }
 
     public void getTest(TextView textView){
@@ -49,7 +51,7 @@ public class TestService extends BaseService<ITestEndpoints> {
             @Override
             public void onFailure(Call<AbstractResponse> call, Throwable t) {
                 Log.e("Test Service",t.getLocalizedMessage());
-                Toast.makeText(_activity.getApplicationContext(), "Error...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error...", Toast.LENGTH_SHORT).show();
             }
         });
     }

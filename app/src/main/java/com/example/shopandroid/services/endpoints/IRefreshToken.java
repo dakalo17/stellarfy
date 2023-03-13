@@ -9,7 +9,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface IRefreshToken {
-    @Headers("Content-Type: application/json")
+
     @POST(Endpoints.REFRESH_TOKEN_URI)
     Call<JwtRefresh> refreshToken(@Body JwtRefresh jwtRefresh);
 }

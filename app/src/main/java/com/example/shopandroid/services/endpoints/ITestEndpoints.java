@@ -8,8 +8,8 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public interface ITestEndpoints extends IRefreshToken{
-    @Headers("Content-Type: application/json")
+public interface ITestEndpoints {
+
     @GET("api/WeatherForecast/GetTest")
     Call<AbstractResponse> getTest();
 }

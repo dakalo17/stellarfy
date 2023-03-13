@@ -25,8 +25,10 @@ import retrofit2.Response;
 public class UserService extends BaseService<IUserEndpoints>{
 
 
+    private final AppCompatActivity _activity;
+
     public UserService(AppCompatActivity activity) {
-        super(activity, IUserEndpoints.class);
+        super(activity.getApplicationContext(), IUserEndpoints.class);
         _activity=activity;
     }
 

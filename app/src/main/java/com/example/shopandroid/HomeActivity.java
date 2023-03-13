@@ -1,9 +1,11 @@
 package com.example.shopandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
             jwtRefresh.token = null;
         }
 
-        _testService = new TestService(this);
+        _testService = new TestService(getApplicationContext());
     }
     private void events() {
         btnClick.setOnClickListener(e->{

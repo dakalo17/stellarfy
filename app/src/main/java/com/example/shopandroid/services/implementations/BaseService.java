@@ -1,6 +1,9 @@
 package com.example.shopandroid.services.implementations;
 
+import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 
 import com.example.shopandroid.models.JSONObjects.User;
 import com.example.shopandroid.models.jwt.JwtRefresh;
@@ -14,9 +17,12 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import okhttp3.ConnectionPool;
 import retrofit2.Callback;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -28,30 +34,41 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.shopandroid.utilities.Endpoints.BASE_URL;
 
-public abstract class BaseService<T extends IRefreshToken> {
+public abstract class BaseService<T> {
 
-    protected AppCompatActivity _activity;
+    //protected AppCompatActivity _activity;
     protected T api;
+    public OkHttpClient.Builder okHttpClientBuilder;
     protected Retrofit retrofit;
-    private Class<T> _classObj;
     protected OkHttpClient httpClient;
-    public BaseService(AppCompatActivity activity, Class<T> classObj){
+    protected Context context;
+    public BaseService(Context context,Class<T> classObj){
 
-        _classObj = classObj;
-        _activity = activity;
+        //_activity = activity;
+        this.context =context;
          Retrofit.Builder builder = new Retrofit
                 .Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create());
 
 
-         UserSessionManagement userSessionManagement = new UserSessionManagement(_activity.getApplicationContext(),false);
+         UserSessionManagement userSessionManagement = new UserSessionManagement(context,false);
 
          //if user is not logged in ,then there is no need at all for client side...
         // to validate/refresh tokens
+
+       okHttpClientBuilder =
+                new OkHttpClient()
+                    .newBuilder()
+                    .connectTimeout(40, TimeUnit.SECONDS)
+                    .readTimeout(40, TimeUnit.SECONDS)
+                    .writeTimeout(40, TimeUnit.SECONDS)
+                    .connectionPool(new ConnectionPool(5, 10, TimeUnit.MINUTES))
+                        .callTimeout(1,TimeUnit.MINUTES)
+
+       ;
+
          if(userSessionManagement.isValidSession()) {
-
-
 
              Interceptor authorization = new Interceptor() {
 
@@ -66,6 +83,7 @@ public abstract class BaseService<T extends IRefreshToken> {
                      //attaches a header so to try to prevent 401/unauthorized response
                      Request.Builder reqBuilder = req
                              .newBuilder()
+                             .header("Content-Type","application/json")
                              .header("Authorization", "Bearer " + user.jwtToken)
                              .method(req.method(), req.body());
 
@@ -79,9 +97,10 @@ public abstract class BaseService<T extends IRefreshToken> {
                      if(res.code() == 401){
                          //makes sure that tasks finish before they continue
                          synchronized (this){
+
                              JwtRefresh jwtRefresh = null;
                              RefreshTokenSessionManagement refreshTokenSession =
-                                     new RefreshTokenSessionManagement(_activity.getApplicationContext(),false);
+                                     new RefreshTokenSessionManagement(context,false);
 
                              //retrieve the current expired access token for server to extract
                              if(refreshTokenSession.isValidSession()) {
@@ -97,56 +116,35 @@ public abstract class BaseService<T extends IRefreshToken> {
                      return res;
                  }
              };
-
-             httpClient = new OkHttpClient()
-                     .newBuilder()
-                     .addInterceptor(authorization)
-                     .build();
-
-             builder.client(httpClient);
+            okHttpClientBuilder.addInterceptor(authorization);
          }
 
+         Interceptor retryInterceptor =new Interceptor() {
+             private int retryCount;
+             private final int MAX_RETRIES = 10;
+             @NonNull
+             @Override
+             public Response intercept(@NonNull Chain chain) throws IOException {
+                 
+                 Request request = chain.request();
+                 Response response = chain.proceed(request);
+
+                 while (response.code() == 503 && retryCount < MAX_RETRIES) {
+                     retryCount++;
+                     response = chain.proceed(request);
+                 }
+
+                 return response;
+             }
+         };
+
+         okHttpClientBuilder.addInterceptor(retryInterceptor);
+        httpClient = okHttpClientBuilder.build();
+        builder.client(httpClient);
         retrofit = builder.build();
         
         api = retrofit.create(classObj);
-    }
 
-    @Deprecated
-    private void RefreshTokenAsync(JwtRefresh jwtTokenRefreshToken){
-
-        //to make sure something is put instead of null
-        Retrofit tempRetrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        T tempApi = tempRetrofit.create(_classObj);
-
-        Call<JwtRefresh> call = tempApi.refreshToken(jwtTokenRefreshToken != null ? jwtTokenRefreshToken : new JwtRefresh());
-//        retrofit2.Response<JwtRefresh> execute = null;
-//        try {
-//            execute = call.execute();
-//        }catch (IOException ex){
-//            Log.e("",ex.getLocalizedMessage());
-//        }
-//        if(execute != null && execute.isSuccessful())
-//            return execute.body();
-//
-//        return null;
-
-
-//        Call<T> call = nul;
-        call.enqueue(new Callback<JwtRefresh>() {
-            @Override
-            public void onResponse(@NonNull Call<JwtRefresh> call, @NonNull retrofit2.Response<JwtRefresh> response) {
-                saveToken(response);
-            }
-
-            @Override
-            public void onFailure(Call<JwtRefresh> call, Throwable t) {
-                Log.e("UserService",t.getLocalizedMessage());
-            }
-        });
     }
     private void RefreshToken(JwtRefresh jwtTokenRefreshToken){
 
@@ -156,7 +154,7 @@ public abstract class BaseService<T extends IRefreshToken> {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        T tempApi = tempRetrofit.create(_classObj);
+        IRefreshToken tempApi = tempRetrofit.create(IRefreshToken.class);
 
         //to make sure something is put instead of null
         Call<JwtRefresh> call = tempApi.refreshToken(jwtTokenRefreshToken != null ? jwtTokenRefreshToken : new JwtRefresh());
@@ -187,8 +185,39 @@ public abstract class BaseService<T extends IRefreshToken> {
         if(jwtRefreshRes == null) return null;
 
         User loggedUser = DecodeToken.DecodeUserClaims(jwtRefreshRes.token);
-        new UserSessionManagement(_activity.getApplicationContext(),true).
+        new UserSessionManagement(context,true).
                 saveSession(loggedUser);
         return jwtRefreshRes;
     }
+
+/**
+ *  @deprecated use the synchronous version since a jwt token needs to be refreshed before running your request
+ *  {@code new RefreshToken(JwtRefresh jwtTokenRefreshToken)}
+ * */
+    @Deprecated
+    private void RefreshTokenAsync(JwtRefresh jwtTokenRefreshToken){
+
+        //to make sure something is put instead of null
+        Retrofit tempRetrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        IRefreshToken tempApi = tempRetrofit.create(IRefreshToken.class);
+
+        Call<JwtRefresh> call = tempApi.refreshToken(jwtTokenRefreshToken != null ? jwtTokenRefreshToken : new JwtRefresh());
+
+        call.enqueue(new Callback<JwtRefresh>() {
+            @Override
+            public void onResponse(@NonNull Call<JwtRefresh> call, @NonNull retrofit2.Response<JwtRefresh> response) {
+                saveToken(response);
+            }
+
+            @Override
+            public void onFailure(Call<JwtRefresh> call, Throwable t) {
+                Log.e("UserService",t.getLocalizedMessage());
+            }
+        });
+    }
+
 }
