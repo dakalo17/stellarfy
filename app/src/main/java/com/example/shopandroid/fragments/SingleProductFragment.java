@@ -67,21 +67,36 @@ public class SingleProductFragment extends Fragment {
             tvProductPriceView.setText("R "+product.price);
             tvDescriptionProductView.setText(product.description);
 
-            Picasso.get().load(product.imageLink).
+            //fetch from cache first
+            Picasso.get().
+                    load(product.imageLink).
                     error(R.drawable.ic_catalogbg).
-                    into(imgProductView, new Callback() {
-                        @Override
-                        public void onSuccess() {
+                   fetch(new Callback() {
+                       @Override
+                       public void onSuccess() {
+                           Picasso.get().
+                                   load(product.imageLink).
+                                   error(R.drawable.ic_catalogbg).
+                                   into(imgProductView, new Callback() {
+                                       @Override
+                                       public void onSuccess() {
 
-                        }
+                                       }
 
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e("Products catalog",e.getLocalizedMessage());
-                            Toast.makeText(getContext(), "Error ->"+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                       @Override
+                                       public void onError(Exception e) {
+                                           Log.e("Products catalog",e.getLocalizedMessage());
+                                           Toast.makeText(getContext(), "Error ->"+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 
-                        }
-                    });
+                                       }
+                                   });
+                       }
+
+                       @Override
+                       public void onError(Exception e) {
+
+                       }
+                   });
         }
 
     }

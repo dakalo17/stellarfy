@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.shopandroid.R;
+import com.example.shopandroid.fragments.CartFragment;
 import com.example.shopandroid.fragments.CatalogFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -48,12 +50,25 @@ public class BottomNavigationActivity extends AppCompatActivity {
     private void events() {
         bottom_navigation.setOnItemReselectedListener(item -> {
             switch(item.getItemId()){
-                case R.id.iHomeBotNav:{
 
+                case R.id.iHomeBotNav:{
+                    _fragment = new CatalogFragment();
                 }break;
+                case R.id.iCartBotNav:{
+                    _fragment = new CartFragment();
+                }
 
                 default:{
 
+                }
+
+                if(_fragment !=null){
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+                    fragmentTransaction
+                            .replace(R.id.flMain,_fragment)
+                            .addToBackStack("")
+                            .commit();
                 }
 
             }

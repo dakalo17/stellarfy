@@ -70,75 +70,66 @@ public abstract class BaseService<T> {
 
          if(userSessionManagement.isValidSession()) {
 
-             Interceptor authorization = new Interceptor() {
+             Interceptor authorization = (@NonNull Interceptor.Chain chain) -> {
 
-                 @NonNull
-                 @Override
-                 public Response intercept(@NonNull Chain chain) throws IOException {
+                 final User user = userSessionManagement.getSession();
+                 //receives request data of a service
+                 Request req = chain.request();
 
-                     final User user = userSessionManagement.getSession();
-                     //receives request data of a service
-                     Request req = chain.request();
-
-                     //attaches a header so to try to prevent 401/unauthorized response
-                     Request.Builder reqBuilder = req
-                             .newBuilder()
-                             .header("Content-Type","application/json")
-                             .header("Authorization", "Bearer " + user.jwtToken)
-                             .method(req.method(), req.body());
+                 //attaches a header so to try to prevent 401/unauthorized response
+                 Request.Builder reqBuilder = req
+                         .newBuilder()
+                         .header("Content-Type","application/json")
+                         .header("Authorization", "Bearer " + user.jwtToken)
+                         .method(req.method(), req.body());
 
 
-                     // propagate the request ->
-                     Response res = chain.proceed(reqBuilder.build());
+                 // propagate the request ->
+                 Response res = chain.proceed(reqBuilder.build());
 
 
-                     //if its unAuthorized -> refresh the token
+                 //if its unAuthorized -> refresh the token
 
-                     if(res.code() == 401){
-                         //makes sure that tasks finish before they continue
-                         synchronized (this){
+                 if(res.code() == 401){
+                     //makes sure that tasks finish before they continue
+                     synchronized (this){
 
-                             JwtRefresh jwtRefresh = null;
-                             RefreshTokenSessionManagement refreshTokenSession =
-                                     new RefreshTokenSessionManagement(context,false);
+                         JwtRefresh jwtRefresh = null;
+                         RefreshTokenSessionManagement refreshTokenSession =
+                                 new RefreshTokenSessionManagement(context,false);
 
-                             //retrieve the current expired access token for server to extract
-                             if(refreshTokenSession.isValidSession()) {
-                                 jwtRefresh = new JwtRefresh();
-                                 jwtRefresh.refreshToken = refreshTokenSession.getSession();
-                                 jwtRefresh.token = user.jwtToken;
-                             }
-
-                             RefreshToken(jwtRefresh);
-
+                         //retrieve the current expired access token for server to extract
+                         if(refreshTokenSession.isValidSession()) {
+                             jwtRefresh = new JwtRefresh();
+                             jwtRefresh.refreshToken = refreshTokenSession.getSession();
+                             jwtRefresh.token = user.jwtToken;
                          }
+
+                         RefreshToken(jwtRefresh);
+
                      }
-                     return res;
                  }
+                 return res;
              };
-            okHttpClientBuilder.addInterceptor(authorization);
+             okHttpClientBuilder.addInterceptor(authorization);
          }
 
-         Interceptor retryInterceptor =new Interceptor() {
-             private int retryCount;
-             private final int MAX_RETRIES = 10;
-             @NonNull
-             @Override
-             public Response intercept(@NonNull Chain chain) throws IOException {
-                 
-                 Request request = chain.request();
-                 Response response = chain.proceed(request);
+         Interceptor importantHeaders = (@NonNull Interceptor.Chain chain) -> {
 
-                 while (response.code() == 503 && retryCount < MAX_RETRIES) {
-                     retryCount++;
-                     response = chain.proceed(request);
-                 }
+             Request req = chain.request();
 
-                 return response;
-             }
+             //for all outgoing requests
+             Request.Builder reqBuilder = req
+                     .newBuilder()
+                     .header("Content-Type","application/json")
+                     .method(req.method(), req.body());
+
+
+             // propagate the request ->
+             return chain.proceed(reqBuilder.build());
          };
 
-         okHttpClientBuilder.addInterceptor(retryInterceptor);
+         okHttpClientBuilder.addInterceptor(importantHeaders);
         httpClient = okHttpClientBuilder.build();
         builder.client(httpClient);
         retrofit = builder.build();
