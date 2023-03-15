@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JetClientState">
+    <option name="draftsState">
+      <draftsState>
+        <option name="requests">
+          <list>
+            <requestState>
+              <option name="id" value="2d49aea3-1dac-4e3d-b178-48959fdf2a22" />
+              <option name="method" value="GET" />
+              <option name="name" value="Draft" />
+              <option name="url" value="https://f5e9-197-90-236-105.ngrok.io/api/Product/GetProducts" />
+            </requestState>
+          </list>
+        </option>
+      </draftsState>
+    </option>
+    <option name="id" value="d7a9ca31-0876-411b-acbf-1f87d14eb82d" />
+  </component>
+</project>
