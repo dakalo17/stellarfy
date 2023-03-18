@@ -14,7 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shopandroid.R;
+import com.example.shopandroid.models.JSONObjects.CartItem;
 import com.example.shopandroid.models.JSONObjects.Product;
+import com.example.shopandroid.services.implementations.CartItemService;
+import com.example.shopandroid.services.session.UserSessionManagement;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -31,12 +34,17 @@ public class SingleProductFragment extends Fragment {
     private TextView tvProductPriceView;
     private TextView tvDescriptionProductView;
 
+
+    private CartItemService _cartItemService;
+
+    private UserSessionManagement _userSession;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_single_product, container, false);
 
+        initProduct(view);
         init(view);
         events(view);
         start(view);
@@ -48,18 +56,28 @@ public class SingleProductFragment extends Fragment {
         tvTitleProductView = view.findViewById(R.id.tvTitleProductView);
         tvProductPriceView = view.findViewById(R.id.tvProductPriceView);
         tvDescriptionProductView = view.findViewById(R.id.tvDescriptionProductView);
+        _cartItemService = new CartItemService(this);
+        _userSession = new UserSessionManagement(requireContext(),false);
     }
 
-    private void start(View view) {
+
+    private Product product;
+
+    private void initProduct(View view) {
+
         Bundle bundle = getArguments();
-        if(bundle == null){
+        if (bundle == null) {
             return;
         }
 
         Serializable getProduct = bundle.getSerializable(SINGLE_PRODUCT_KEY);
 
-        if(getProduct instanceof Product){
-            Product product = (Product)getProduct;
+        if (getProduct instanceof Product) {
+             product = (Product) getProduct;
+        }
+    }
+    private void start(View view) {
+
 
 
 
@@ -99,13 +117,29 @@ public class SingleProductFragment extends Fragment {
                    });
         }
 
-    }
+
 
 
 
     private void events(View view) {
+
+
+
+
         btnAddToCartView.setOnClickListener(e->{
             //Todo add to cart
+
+            CartItem cartItem = new CartItem();
+
+
+            cartItem.Id =0;
+            cartItem.Fk_Product_Id = product.id;
+            cartItem.Fk_Order_Id = _userSession.getSession().cartId;
+            cartItem.Quantity = 1;
+            cartItem.Price = product.price;
+            cartItem.Status = 1;
+
+            _cartItemService.postCartItem(cartItem,0);
         });
     }
 

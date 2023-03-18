@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.shopandroid.MainActivity;
+import com.example.shopandroid.activities.BottomNavigationActivity;
 import com.example.shopandroid.activities.LoginActivity;
 import com.example.shopandroid.models.JSONObjects.User;
 import com.example.shopandroid.models.jwt.JwtRefresh;
@@ -64,7 +65,7 @@ public class UserService extends BaseService<IUserEndpoints>{
                 //copy
                 //userRetrieved.copy(loggedUser);
                 if(userSessionManagement.isValidSession()){
-                    _activity.startActivity(new Intent(_activity.getApplicationContext(), LoginActivity.class));
+                    _activity.startActivity(new Intent(_activity.getApplicationContext(), BottomNavigationActivity.class));
                 }
             }
 

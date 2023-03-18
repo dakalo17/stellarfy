@@ -93,7 +93,11 @@ public class ProductService extends BaseService<IProductEndpoint>{
 
             @Override
             public void onFailure(Call<ArrayList<Product>> call, Throwable t) {
-                Log.e(TAG,t.getLocalizedMessage());
+                try {
+                    Log.e(TAG, t.getLocalizedMessage());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 Toast.makeText(_fragment.getContext(),"getProducts = "+ t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
 
 

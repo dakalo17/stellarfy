@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-
+    android:background="@color/white"
     >
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,39 +56,49 @@
 
                     />
 
-                <com.google.android.material.textfield.TextInputLayout
 
-
-
-                    android:id="@+id/tvQuantityCartItemContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-
-                    app:helperText="qty"
-
-                    android:layout_below="@+id/tvProductPriceCartItem"
-                    app:boxCornerRadiusTopEnd="0dp"
-                    app:boxCornerRadiusTopStart="0dp"
-                    app:boxCornerRadiusBottomStart="0dp"
-                    app:boxCornerRadiusBottomEnd="0dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tvQuantityCartItem"
-                        android:inputType="number"
-
-                        android:textSize="12sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
-
-
-                </com.google.android.material.textfield.TextInputLayout>
 
 
 
             </RelativeLayout>
+            <com.google.android.material.textfield.TextInputLayout
+
+            android:layout_weight=".75"
+
+            android:id="@+id/tvQuantityCartItemContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+
+            app:helperText="qty"
+
+
+            app:boxCornerRadiusTopEnd="2dp"
+            app:boxCornerRadiusTopStart="2dp"
+            app:boxCornerRadiusBottomStart="2dp"
+            app:boxCornerRadiusBottomEnd="2dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvQuantityCartItem"
+                android:inputType="number"
+
+                android:textSize="12sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnQuantityCartItem"
+                android:text="update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     </LinearLayout>

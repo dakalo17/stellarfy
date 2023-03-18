@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.shopandroid.HomeActivity;
 import com.example.shopandroid.R;
+import com.example.shopandroid.fragments.CatalogFragment;
 import com.example.shopandroid.models.JSONObjects.User;
 import com.example.shopandroid.models.jwt.JwtRefresh;
 import com.example.shopandroid.models.jwt.RefreshToken;
@@ -47,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
 
         _userSession =new UserSessionManagement(getApplicationContext(),false);
         if(_userSession.isValidSession()) {
-            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+            startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
         }
         init();
         start();

@@ -48,7 +48,8 @@ public class BottomNavigationActivity extends AppCompatActivity {
     }
 
     private void events() {
-        bottom_navigation.setOnItemReselectedListener(item -> {
+
+        bottom_navigation.setOnItemSelectedListener(item -> {
             switch(item.getItemId()){
 
                 case R.id.iHomeBotNav:{
@@ -73,6 +74,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
             }
 
+            return true;
 
         });
 

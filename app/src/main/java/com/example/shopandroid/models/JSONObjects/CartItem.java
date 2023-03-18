@@ -13,4 +13,6 @@ public class CartItem {
     public int Quantity ;
     @SerializedName("price")
     public double Price;
+    @SerializedName("status")
+    public int Status;
 }

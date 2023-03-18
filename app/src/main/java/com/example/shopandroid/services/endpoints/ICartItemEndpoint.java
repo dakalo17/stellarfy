@@ -2,6 +2,7 @@ package com.example.shopandroid.services.endpoints;
 
 import com.example.shopandroid.models.JSONObjects.AbstractResponse;
 import com.example.shopandroid.models.JSONObjects.CartItem;
+import com.example.shopandroid.models.JSONObjects.CartProduct;
 
 import java.util.ArrayList;
 
@@ -12,16 +13,20 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
+import static com.example.shopandroid.utilities.Endpoints.*;
+
+
 public interface ICartItemEndpoint {
-    @POST(" ")
+    @POST(POST_CART_ITEM)
     Call<AbstractResponse> postCartItem(@Body CartItem cartItem) ;
 
-    @GET(" ")
-    Call<ArrayList<CartItem>> getCartItems();
+    @GET(GET_CART_ITEMS)
+    Call<ArrayList<CartProduct>> getCartItems(@Path("cartId")int cartId);
 
-    @GET(" ")
+    @GET(GET_CART_ITEM)
     Call<CartItem> getCartItem();
 
-    @PUT(" ")
-    Call<AbstractResponse> putCartItem(@Path("id") int id,@Body CartItem cartItem);
+
+    @PUT(PUT_CART_ITEM)
+    Call<AbstractResponse> putCartItem(@Body CartItem cartItem);
 }

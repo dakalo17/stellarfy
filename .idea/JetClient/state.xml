@@ -6,10 +6,24 @@
         <option name="requests">
           <list>
             <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="raw" value="{&#10;  &quot;id&quot;: 0,&#10;  &quot;fk_Order_Id&quot;: 0,&#10;  &quot;fk_Product_Id&quot;: 0,&#10;  &quot;quantity&quot;: 0,&#10;  &quot;price&quot;: 0,&#10;  &quot;status&quot;: 0&#10;}" />
+                  <option name="type" value="JSON" />
+                </bodyState>
+              </option>
+              <option name="headers">
+                <list>
+                  <headerState>
+                    <option name="key" value="Content-Type" />
+                    <option name="value" value="application/json" />
+                  </headerState>
+                </list>
+              </option>
               <option name="id" value="2d49aea3-1dac-4e3d-b178-48959fdf2a22" />
-              <option name="method" value="GET" />
+              <option name="method" value="POST" />
               <option name="name" value="Draft" />
-              <option name="url" value="https://f5e9-197-90-236-105.ngrok.io/api/Product/GetProducts" />
+              <option name="url" value="https://b5e0-197-90-236-105.ngrok.io/api/CartItem/PostCartItem " />
             </requestState>
           </list>
         </option>

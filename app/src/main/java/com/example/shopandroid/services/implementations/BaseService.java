@@ -42,6 +42,7 @@ public abstract class BaseService<T> {
     protected Retrofit retrofit;
     protected OkHttpClient httpClient;
     protected Context context;
+    private static final String TAG="UserService";
     public BaseService(Context context,Class<T> classObj){
 
         //_activity = activity;
@@ -161,7 +162,7 @@ public abstract class BaseService<T> {
             Log.e("Received token -> ",jwtRefreshRes != null ? jwtRefreshRes.token:"");
 
         } catch (IOException e) {
-            Log.e("UserService",e.getLocalizedMessage());
+            Log.e(TAG,e.getLocalizedMessage() != null?e.getLocalizedMessage():"null" );
         }
 
 
@@ -206,7 +207,7 @@ public abstract class BaseService<T> {
 
             @Override
             public void onFailure(Call<JwtRefresh> call, Throwable t) {
-                Log.e("UserService",t.getLocalizedMessage());
+                Log.e(TAG,t.getLocalizedMessage() != null?t.getLocalizedMessage():"null" );
             }
         });
     }
