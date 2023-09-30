@@ -20,8 +20,8 @@ import retrofit2.Response;
 public class CartItemService extends BaseService<ICartItemEndpoint> {
     private static final String TAG = "Cart Item Service";
     private Context _context;
-    public CartItemService(Context context, Class<ICartItemEndpoint> classObj) {
-        super(context, classObj);
+    public CartItemService(Context context) {
+        super(context, ICartItemEndpoint.class);
         _context = context;
     }
 

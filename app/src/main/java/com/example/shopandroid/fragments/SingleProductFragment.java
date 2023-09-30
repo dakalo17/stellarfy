@@ -53,7 +53,7 @@ public class SingleProductFragment extends Fragment {
         tvProductPriceView = view.findViewById(R.id.tvProductPriceView);
         tvDescriptionProductView = view.findViewById(R.id.tvDescriptionProductView);
 
-        _cartItemService = new CartItemService(getContext(),ICartItemEndpoint.class);
+        _cartItemService = new CartItemService(getContext());
     }
 
     private void start(View view) {
@@ -121,8 +121,7 @@ public class SingleProductFragment extends Fragment {
 
 
             obj.Fk_Product_Id = product.id;
-            obj.Id = -1;
-            obj.Fk_Order_Id =1;
+            obj.Fk_Order_Id =-1;
             obj.Price = product.price;
             obj.Quantity = 1;
 
