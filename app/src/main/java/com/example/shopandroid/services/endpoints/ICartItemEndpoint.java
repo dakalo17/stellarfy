@@ -1,5 +1,7 @@
 package com.example.shopandroid.services.endpoints;
 
+import static com.example.shopandroid.utilities.Endpoints.POST_CART_PRODUCT;
+
 import com.example.shopandroid.models.JSONObjects.AbstractResponse;
 import com.example.shopandroid.models.JSONObjects.CartItem;
 
@@ -13,7 +15,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface ICartItemEndpoint {
-    @POST(" ")
+    @POST(POST_CART_PRODUCT)
     Call<AbstractResponse> postCartItem(@Body CartItem cartItem) ;
 
     @GET(" ")

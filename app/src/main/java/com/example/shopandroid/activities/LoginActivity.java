@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
         _userSession =new UserSessionManagement(getApplicationContext(),false);
         if(_userSession.isValidSession()) {
-            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+            startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
         }
         init();
         start();

@@ -13,6 +13,7 @@ import com.example.shopandroid.services.endpoints.IProductEndpoint;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,13 +36,13 @@ public class ProductService extends BaseService<IProductEndpoint>{
 
         call.enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
+            public void onResponse(@NonNull Call<Product> call, @NonNull Response<Product> response) {
 
             }
 
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
-                Log.e(TAG,t.getLocalizedMessage());
+            public void onFailure(@NonNull Call<Product> call, @NonNull Throwable t) {
+                Log.e(TAG, Objects.requireNonNull(t.getLocalizedMessage()));
                 Toast.makeText(_fragment.getContext(),"getProduct id = "+ t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         });
@@ -52,13 +53,13 @@ public class ProductService extends BaseService<IProductEndpoint>{
 
         call.enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(Call<Product> call, Response<Product> response) {
+            public void onResponse(@NonNull Call<Product> call, @NonNull Response<Product> response) {
 
             }
 
             @Override
-            public void onFailure(Call<Product> call, Throwable t) {
-                Log.e(TAG,t.getLocalizedMessage());
+            public void onFailure(@NonNull Call<Product> call, Throwable t) {
+                Log.e(TAG, Objects.requireNonNull(t.getLocalizedMessage()));
                 Toast.makeText(_fragment.getContext(),"getProduct name = "+ t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         });
@@ -70,11 +71,11 @@ public class ProductService extends BaseService<IProductEndpoint>{
         Call<ArrayList<Product>> call = api.getProduct();
 
 
-        call.enqueue(new Callback<ArrayList<Product>>() {
+        call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<ArrayList<Product>> call, Response<ArrayList<Product>> response) {
+            public void onResponse(@NonNull Call<ArrayList<Product>> call, Response<ArrayList<Product>> response) {
 
-                if(!response.isSuccessful())return;
+                if (!response.isSuccessful()) return;
 
                 GridLayoutManager gridLayoutManager =
                         new GridLayoutManager(_fragment
@@ -85,21 +86,22 @@ public class ProductService extends BaseService<IProductEndpoint>{
                 ArrayList<Product> products = response.body();
 
                 CatalogProductAdapter catalogProductAdapter =
-                        new CatalogProductAdapter(products,_fragment.getContext(),_fragment.getParentFragmentManager());
+                        new CatalogProductAdapter(products, _fragment.getContext(), _fragment.getParentFragmentManager());
                 rvCatalogCatalog.setLayoutManager(gridLayoutManager);
                 rvCatalogCatalog.setAdapter(catalogProductAdapter);
 
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Product>> call, Throwable t) {
-                Log.e(TAG,t.getLocalizedMessage());
-                Toast.makeText(_fragment.getContext(),"getProducts = "+ t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            public void onFailure(@NonNull Call<ArrayList<Product>> call, @NonNull Throwable t) {
+                Log.e(TAG, Objects.requireNonNull(t.getLocalizedMessage()));
+                Toast.makeText(_fragment.getContext(), "getProducts = " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
 
 
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    getProducts(rvCatalogCatalog,retries+1);
-                }, 2000);;
+                    getProducts(rvCatalogCatalog, retries + 1);
+                }, 2000);
+                ;
             }
         });
     }

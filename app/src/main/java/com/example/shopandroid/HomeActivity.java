@@ -17,6 +17,11 @@ import com.example.shopandroid.services.implementations.TestService;
 import com.example.shopandroid.services.session.RefreshTokenSessionManagement;
 import com.example.shopandroid.services.session.UserSessionManagement;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+
 public class HomeActivity extends AppCompatActivity {
 
     private TextView textView;
@@ -28,8 +33,26 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        if(!new UserSessionManagement(getApplicationContext(),false).isValidSession()) {
-            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+        var resSession = new RefreshTokenSessionManagement(getApplicationContext(),false);
+
+        if(resSession.isValidSession()){
+            var getSess = resSession.getSession();
+
+            var simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss aaa z");
+
+            Calendar calendar = Calendar.getInstance();
+
+            try {
+                var date = simpleDateFormat.parse(getSess.expiringDate);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
+            LocalDateTime.now();
+        }else {
+            if (!new UserSessionManagement(getApplicationContext(), false).isValidSession()) {
+                startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+            }
         }
 
         init();

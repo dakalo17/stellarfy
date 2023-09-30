@@ -46,10 +46,11 @@ public abstract class BaseService<T> {
 
         //_activity = activity;
         this.context =context;
+        Gson gson = new GsonBuilder().setLenient().create();
          Retrofit.Builder builder = new Retrofit
                 .Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create());
+                .addConverterFactory(GsonConverterFactory.create(gson));
 
 
          UserSessionManagement userSessionManagement = new UserSessionManagement(context,false);
@@ -57,16 +58,14 @@ public abstract class BaseService<T> {
          //if user is not logged in ,then there is no need at all for client side...
         // to validate/refresh tokens
 
-       okHttpClientBuilder =
+        okHttpClientBuilder =
                 new OkHttpClient()
-                    .newBuilder()
-                    .connectTimeout(40, TimeUnit.SECONDS)
-                    .readTimeout(40, TimeUnit.SECONDS)
-                    .writeTimeout(40, TimeUnit.SECONDS)
-                    .connectionPool(new ConnectionPool(5, 10, TimeUnit.MINUTES))
-                        .callTimeout(1,TimeUnit.MINUTES)
-
-       ;
+                        .newBuilder()
+                        .connectTimeout(40, TimeUnit.SECONDS)
+                        .readTimeout(40, TimeUnit.SECONDS)
+                        .writeTimeout(40, TimeUnit.SECONDS)
+                        .connectionPool(new ConnectionPool(5, 10, TimeUnit.MINUTES))
+                        .callTimeout(1,TimeUnit.MINUTES) ;
 
          if(userSessionManagement.isValidSession()) {
 
@@ -161,7 +160,8 @@ public abstract class BaseService<T> {
             Log.e("Received token -> ",jwtRefreshRes != null ? jwtRefreshRes.token:"");
 
         } catch (IOException e) {
-            Log.e("UserService",e.getLocalizedMessage());
+
+            Log.e("UserService",e.getLocalizedMessage() + " ");
         }
 
 

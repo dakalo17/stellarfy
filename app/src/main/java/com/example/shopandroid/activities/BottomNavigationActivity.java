@@ -8,14 +8,28 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.example.shopandroid.HomeActivity;
 import com.example.shopandroid.R;
 import com.example.shopandroid.fragments.CartFragment;
 import com.example.shopandroid.fragments.CatalogFragment;
+import com.example.shopandroid.models.jwt.RefreshToken;
+import com.example.shopandroid.services.session.RefreshTokenSessionManagement;
+import com.example.shopandroid.services.session.UserSessionManagement;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 
 
 public class BottomNavigationActivity extends AppCompatActivity {
@@ -29,9 +43,29 @@ public class BottomNavigationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation);
 
+        checkSession();
         setHomeFragment();
         init();
         events();
+    }
+
+    private void checkSession() {
+        var resSession = new RefreshTokenSessionManagement(getApplicationContext(),false);
+
+        var userSession = new UserSessionManagement(getApplicationContext(), false);
+        if(resSession.isValidSession()){
+            var getSession = resSession.getSession();
+
+            if(tokenExpired(getSession)){
+                userSession.removeSession();
+                startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
+            }
+
+        }else {
+            if (!userSession.isValidSession()) {
+                startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
+            }
+        }
     }
 
     private void setHomeFragment() {
@@ -78,6 +112,21 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
     }
 
+    private boolean tokenExpired(RefreshToken getSession){
+        LocalDateTime localDateTime ;
+
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_INSTANT;
+        Instant instant = Instant.from(dateTimeFormatter.parse(getSession.expiringDate));
+        ZoneId zoneId = ZoneId.systemDefault();
+        localDateTime = instant.atZone(zoneId).toLocalDateTime();
+
+
+
+        int compare = localDateTime.compareTo(LocalDateTime.now());
+
+        return compare < 0;
+    }
 
     @Override
     public void onBackPressed() {

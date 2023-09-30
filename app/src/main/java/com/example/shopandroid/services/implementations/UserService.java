@@ -36,21 +36,21 @@ public class UserService extends BaseService<IUserEndpoints>{
     public void Login(User user,User userRetrieved){
         Call<JwtRefresh> call = api.login("Bearer ",user);
 
-        call.enqueue(new Callback<JwtRefresh>() {
+        call.enqueue(new Callback<>() {
             @Override
             public void onResponse(Call<JwtRefresh> call, Response<JwtRefresh> response) {
-                if(!response.isSuccessful())return;
+                if (!response.isSuccessful()) return;
 
                 JwtRefresh jwtPair = response.body();
 
-                if(jwtPair==null) return ;
+                if (jwtPair == null) return;
 
                 //decode jwt token - no need to verify it - then put to session
                 User loggedUser = DecodeToken.DecodeUserClaims(jwtPair.token);
                 UserSessionManagement userSessionManagement =
                         new UserSessionManagement(_activity.getApplicationContext(), true);
 
-                if(loggedUser == null) {
+                if (loggedUser == null) {
                     _activity.startActivity(new Intent(_activity.getApplicationContext(), LoginActivity.class));
                     Toast.makeText(_activity.getApplicationContext(), "Some error occurred", Toast.LENGTH_SHORT).show();
                     return;
@@ -58,12 +58,12 @@ public class UserService extends BaseService<IUserEndpoints>{
                 userSessionManagement.saveSession(loggedUser);
                 //save refresh token to session,ie local storage of device
                 ///Todo
-                new RefreshTokenSessionManagement(_activity.getApplicationContext(),true).
+                new RefreshTokenSessionManagement(_activity.getApplicationContext(), true).
                         saveSession(jwtPair.refreshToken);
 
                 //copy
                 //userRetrieved.copy(loggedUser);
-                if(userSessionManagement.isValidSession()){
+                if (userSessionManagement.isValidSession()) {
                     _activity.startActivity(new Intent(_activity.getApplicationContext(), LoginActivity.class));
                 }
             }
@@ -71,7 +71,7 @@ public class UserService extends BaseService<IUserEndpoints>{
 
             @Override
             public void onFailure(Call<JwtRefresh> call, Throwable t) {
-                Log.e("UserService",t.getLocalizedMessage());
+                Log.e("UserService", t.getLocalizedMessage());
 
             }
         });
