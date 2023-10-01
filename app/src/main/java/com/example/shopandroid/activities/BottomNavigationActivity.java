@@ -18,6 +18,8 @@ import com.example.shopandroid.R;
 import com.example.shopandroid.fragments.CartFragment;
 import com.example.shopandroid.fragments.CatalogFragment;
 import com.example.shopandroid.models.jwt.RefreshToken;
+import com.example.shopandroid.services.implementations.CartItemService;
+import com.example.shopandroid.services.session.CartItemsSessionManagement;
 import com.example.shopandroid.services.session.RefreshTokenSessionManagement;
 import com.example.shopandroid.services.session.UserSessionManagement;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -37,6 +39,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
     private BottomNavigationView bottom_navigation;
     private final FragmentManager _fragmentManager =getSupportFragmentManager();
     private Fragment _fragment=null;
+    private CartItemService _cartItemService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +69,16 @@ public class BottomNavigationActivity extends AppCompatActivity {
                 startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
             }
         }
+
+        pullCarts();
     }
 
+    private void pullCarts(){
+
+        _cartItemService= new CartItemService(getApplicationContext());
+
+        _cartItemService.getCartItems();
+    }
     private void setHomeFragment() {
         //Todo check user roles
         Fragment fragment = new CatalogFragment();

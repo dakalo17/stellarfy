@@ -2,6 +2,7 @@ package com.example.shopandroid.adapters;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -35,7 +36,10 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
     @NonNull
     @Override
     public CartItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.fragment_cart,parent,false);
+
+        return new CartItemsAdapter.CartItemViewHolder(view);
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.example.shopandroid.R;
+import com.example.shopandroid.services.session.CartItemsSessionManagement;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -42,6 +43,11 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //TODO remove any carts
+        var cartSession =new CartItemsSessionManagement(getApplicationContext(),true);
+
+
         setContentView(R.layout.activity_sign_up);
         init();
         validations();

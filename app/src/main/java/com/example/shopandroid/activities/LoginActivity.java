@@ -10,11 +10,14 @@ import android.widget.Toast;
 
 import com.example.shopandroid.HomeActivity;
 import com.example.shopandroid.R;
+import com.example.shopandroid.models.JSONObjects.CartItem;
 import com.example.shopandroid.models.JSONObjects.User;
 import com.example.shopandroid.models.jwt.JwtRefresh;
 import com.example.shopandroid.models.jwt.RefreshToken;
 import com.example.shopandroid.services.endpoints.IUserEndpoints;
+import com.example.shopandroid.services.implementations.CartItemService;
 import com.example.shopandroid.services.implementations.UserService;
+import com.example.shopandroid.services.session.CartItemsSessionManagement;
 import com.example.shopandroid.services.session.RefreshTokenSessionManagement;
 import com.example.shopandroid.services.session.UserSessionManagement;
 import com.google.android.material.textfield.TextInputEditText;
@@ -38,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
     private UserService _userService;
     private UserSessionManagement _userSession;
 
+    private CartItemService _cartItemService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +53,9 @@ public class LoginActivity extends AppCompatActivity {
         _userSession =new UserSessionManagement(getApplicationContext(),false);
         if(_userSession.isValidSession()) {
             startActivity(new Intent(LoginActivity.this, BottomNavigationActivity.class));
+            //remove any carts session
+            new CartItemsSessionManagement(getApplicationContext(),true);
+            pullCarts();
         }
         init();
         start();
@@ -91,6 +99,13 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
 
         });
+
+    }
+
+    private void pullCarts(){
+        _cartItemService= new CartItemService(getApplicationContext());
+
+        _cartItemService.getCartItems();
 
     }
 }

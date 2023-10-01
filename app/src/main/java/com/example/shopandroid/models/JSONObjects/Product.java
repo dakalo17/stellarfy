@@ -3,8 +3,8 @@ package com.example.shopandroid.models.JSONObjects;
 import java.io.Serializable;
 
 public class Product implements Serializable {
-    @SuppressWarnings("id")
-    public int id;
+    //@SuppressWarnings("id")
+    //public int id;
     @SuppressWarnings("name")
     public String name;
     @SuppressWarnings("price")

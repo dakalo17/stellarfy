@@ -35,8 +35,6 @@ public class RefreshTokenSessionManagement implements ISessionManagement<Refresh
     @Override
     public RefreshToken getSession(){
         String json = sharedPreferences.getString(SESSION_KEY,DEFAULT_JSON_STRING);
-
-
         return _gson.fromJson(json,RefreshToken.class);
     }
 

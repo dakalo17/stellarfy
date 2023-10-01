@@ -1,9 +1,11 @@
 package com.example.shopandroid.services.endpoints;
 
+import static com.example.shopandroid.utilities.Endpoints.GET_CART_PRODUCTS;
 import static com.example.shopandroid.utilities.Endpoints.POST_CART_PRODUCT;
 
 import com.example.shopandroid.models.JSONObjects.AbstractResponse;
 import com.example.shopandroid.models.JSONObjects.CartItem;
+import com.example.shopandroid.models.JSONObjects.Product;
 
 import java.util.ArrayList;
 
@@ -16,10 +18,10 @@ import retrofit2.http.Path;
 
 public interface ICartItemEndpoint {
     @POST(POST_CART_PRODUCT)
-    Call<AbstractResponse> postCartItem(@Body CartItem cartItem) ;
+    Call<Product> postCartItem(@Body CartItem cartItem) ;
 
-    @GET(" ")
-    Call<ArrayList<CartItem>> getCartItems();
+    @GET(GET_CART_PRODUCTS)
+    Call<ArrayList<Product>> getCartItems();
 
     @GET(" ")
     Call<CartItem> getCartItem();
