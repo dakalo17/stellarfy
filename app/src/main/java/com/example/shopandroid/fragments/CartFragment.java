@@ -53,20 +53,15 @@ public class CartFragment extends Fragment {
                         getApplicationContext(),
                         RECYCLER_VIEW_COLUMN_COUNT);
 
-        List<Product> products = null;
+
 
         var cartItemSession = new CartItemsSessionManagement(requireActivity().getApplicationContext(),false);
+        var isValidSession = cartItemSession.isValidSessionReturn();
 
-        if(cartItemSession.isValidSession()){
-            products = cartItemSession.getSession();
-        }
-        if(products == null)return;
-
-
-
+        if(!isValidSession.second)return;
 
         CartItemsAdapter cartItemsAdapter =
-                new CartItemsAdapter((ArrayList<Product>) products,requireContext());
+                new CartItemsAdapter((ArrayList<Product>) isValidSession.first,requireContext());
 
         rvCartItems.setLayoutManager(gridLayoutManager);
         rvCartItems.setAdapter(cartItemsAdapter);

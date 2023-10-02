@@ -53,23 +53,27 @@ public class BottomNavigationActivity extends AppCompatActivity {
     }
 
     private void checkSession() {
-        var resSession = new RefreshTokenSessionManagement(getApplicationContext(),false);
+
+
 
         var userSession = new UserSessionManagement(getApplicationContext(), false);
-        if(resSession.isValidSession()){
-            var getSession = resSession.getSession();
+        var resSession = new RefreshTokenSessionManagement(getApplicationContext(),false);
 
-            if(tokenExpired(getSession)){
+        if(userSession.isValidSession() && resSession.isValidSession()){
+
+            var getResSession = resSession.getSession();
+
+            if(tokenExpired(getResSession)){
                 userSession.removeSession();
                 startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
             }
 
-        }else {
-            if (!userSession.isValidSession()) {
-                startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
-            }
-        }
+        }else{
+            userSession.removeSession();
+            resSession.removeSession();
+            startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
 
+        }
         pullCarts();
     }
 
@@ -94,6 +98,8 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
     private void events() {
         bottom_navigation.setOnItemReselectedListener(item -> {
+
+
             switch(item.getItemId()){
 
                 case R.id.iHomeBotNav:{
@@ -101,23 +107,27 @@ public class BottomNavigationActivity extends AppCompatActivity {
                 }break;
                 case R.id.iCartBotNav:{
                     _fragment = new CartFragment();
-                }
+                }break;
+                case R.id.iProfileBotNav:{
+
+                logout();
+                }break;
 
                 default:{
 
                 }
 
-                if(_fragment !=null){
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-                    fragmentTransaction
-                            .replace(R.id.flMain,_fragment)
-                            .addToBackStack("")
-                            .commit();
-                }
 
             }
+            if(_fragment !=null){
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
+                fragmentTransaction
+                        .replace(R.id.flMain,_fragment)
+                        .addToBackStack("")
+                        .commit();
+            }
 
         });
 
@@ -139,6 +149,15 @@ public class BottomNavigationActivity extends AppCompatActivity {
         return compare < 0;
     }
 
+    private void logout(){
+        var userSession = new UserSessionManagement(getApplicationContext(),false);
+
+        if(userSession.isValidSession()){
+            userSession.removeSession();
+            startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
+
+        }
+    }
     @Override
     public void onBackPressed() {
 

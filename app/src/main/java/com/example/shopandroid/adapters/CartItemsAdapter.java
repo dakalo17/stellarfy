@@ -37,7 +37,7 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
     @Override
     public CartItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_cart,parent,false);
+                .inflate(R.layout.single_cart_product_item,parent,false);
 
         return new CartItemsAdapter.CartItemViewHolder(view);
     }
@@ -45,16 +45,17 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
     @Override
     public void onBindViewHolder(@NonNull CartItemViewHolder holder, int position) {
 
-
+    try {
         holder.tvProductTitleCartItem.setText(_products.get(position).name);
-        holder.tvProductPriceCartItem.setText("R "+_products.get(position).price);
-
+        holder.tvProductPriceCartItem.setText("R ".concat(
+                String.valueOf(_products.get(position).price*_products.get(position).quantity) ));
+        holder.tvQuantityCartItem.setText(String.valueOf(_products.get(position).quantity));
 
         final int finalPosition = position;
         Picasso.get().load(_products.get(position).imageLink).
                 error(R.drawable.ic_catalogbg).
 
-                fetch( new Callback() {
+                fetch(new Callback() {
                     @Override
                     public void onSuccess() {
 
@@ -69,8 +70,8 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
 
                                     @Override
                                     public void onError(Exception e) {
-                                        Log.e("Products catalog",e.getLocalizedMessage());
-                                        Toast.makeText(_context, "Error ->"+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                        Log.e("Products catalog", e.getLocalizedMessage());
+                                        Toast.makeText(_context, "Error ->" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 
                                     }
                                 });
@@ -78,11 +79,14 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
 
                     @Override
                     public void onError(Exception e) {
-                        Log.e("Products catalog",e.getLocalizedMessage());
-                        Toast.makeText(_context, "Error ->"+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("Products catalog", e.getLocalizedMessage());
+                        Toast.makeText(_context, "Error ->" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 
                     }
                 });
+    }catch(Exception e){
+        e.getLocalizedMessage();
+    }
     }
 
     @Override

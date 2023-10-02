@@ -120,7 +120,7 @@ public class SingleProductFragment extends Fragment {
             var obj = new CartItem();
 
 
-            //obj.Fk_Product_Id = product.id;
+            obj.Fk_Product_Id = product.id;
             obj.Fk_Order_Id =-1;
             obj.Price = product.price;
             obj.Quantity = 1;

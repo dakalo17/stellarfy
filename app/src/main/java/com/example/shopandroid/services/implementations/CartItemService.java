@@ -39,7 +39,7 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
 
                 var res = response.body();
 
-                if(res == null)return;
+                    if(res == null)return;
 
                 //add to the session/cache as NEW
                 var cartSession = new CartItemsSessionManagement(_context,true);
@@ -62,24 +62,19 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
             public void onResponse(@NonNull Call<Product> call, @NonNull Response<Product> response) {
                 if(!response.isSuccessful())return;
 
-                Product res = response.body();
+                Product product = response.body();
+                if(product == null)return;
+
                 var cartSession = new CartItemsSessionManagement(_context,false);
+                var sessionValidity = cartSession.isValidSessionReturn();
+                if(sessionValidity.second) {
+                    //update the quantity
+                    product.quantity = cartItem.Quantity;
 
-                if(cartSession.isValidSession()) {
-                    var product = new Product();
-
-                   // product.id = -1;
-//                    product.imageLink = "";
-//                    product.quantity = cartItem.Quantity;
-//                    product.description = "";
-//                    product.name ="";
-//                    product.price = 1;
-//                    product.specialPrice =1;
-
-                    if (!cartSession.editSessionJSON(res))
+                    if (!cartSession.editSessionJSON(product))
                         Toast.makeText(_context, "Cart Item ERROR NOT UPDATED", Toast.LENGTH_LONG).show();
                     else
-                        Toast.makeText(_context, res != null ? "Y" : "N", Toast.LENGTH_LONG).show();
+                        Toast.makeText(_context, "Y", Toast.LENGTH_LONG).show();
                 }else
                     Toast.makeText(_context, "CART CACHE IS INVALID", Toast.LENGTH_LONG).show();
             }

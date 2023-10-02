@@ -2,6 +2,7 @@ package com.example.shopandroid.services.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Pair;
 
 import com.example.shopandroid.models.JSONObjects.Product;
 
@@ -51,7 +52,7 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
         boolean insert = true;
         for(JsonElement element: jsonArray){
             JsonObject cartJSONObj =element.getAsJsonObject();
-            if(cartJSONObj.get("name").getAsString().equals(String.valueOf(obj.name))){
+            if(cartJSONObj.get("id").getAsString().equals(String.valueOf(obj.id))){
                 int currQuantity = cartJSONObj.get("quantity").getAsInt();
                 cartJSONObj.addProperty("quantity",currQuantity+obj.quantity);
                 insert = false;
@@ -85,7 +86,15 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
 
     @Override
     public boolean isValidSession() {
-        return false;
+        var session = getSession();
+        return session != null;
+    }
+
+    public Pair<List<Product>,Boolean> isValidSessionReturn(){
+        var session = getSession();
+
+
+        return new Pair<>(session,session !=null);
     }
 
     @Override
