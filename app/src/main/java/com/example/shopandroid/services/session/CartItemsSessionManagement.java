@@ -64,6 +64,7 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
         if(insert){
             JsonObject newProduct = new JsonObject();
 
+            newProduct.addProperty("id",obj.id);
             newProduct.addProperty("name",obj.name);
             newProduct.addProperty("quantity",obj.quantity);
             newProduct.addProperty("price",obj.price);
