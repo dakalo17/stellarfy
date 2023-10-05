@@ -100,6 +100,6 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
 
     @Override
     public void removeSession() {
-
+        editor.putString(SESSION_KEY,DEFAULT_JSON_STRING).commit();
     }
 }
