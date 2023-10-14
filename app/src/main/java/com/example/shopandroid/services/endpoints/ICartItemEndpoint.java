@@ -15,10 +15,11 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ICartItemEndpoint {
     @POST(POST_CART_PRODUCT)
-    Call<Product> postCartItem(@Body CartItem cartItem) ;
+    Call<Product> postCartItem(@Body CartItem cartItem,@Query("isUpdate") boolean isUpdate) ;
 
     @GET(GET_CART_PRODUCTS)
     Call<ArrayList<Product>> getCartItems();

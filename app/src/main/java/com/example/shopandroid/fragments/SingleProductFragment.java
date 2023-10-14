@@ -22,6 +22,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import static com.example.shopandroid.utilities.Misc.SINGLE_PRODUCT_KEY;
 
@@ -70,7 +71,7 @@ public class SingleProductFragment extends Fragment {
 
 
             tvTitleProductView.setText(product.name);
-            tvProductPriceView.setText("R "+product.price);
+            tvProductPriceView.setText("R ".concat(String.valueOf(product.price)));
             tvDescriptionProductView.setText(product.description);
 
             //fetch from cache first
@@ -91,7 +92,7 @@ public class SingleProductFragment extends Fragment {
 
                                        @Override
                                        public void onError(Exception e) {
-                                           Log.e("Products catalog",e.getLocalizedMessage());
+                                           Log.e("Products catalog", Objects.requireNonNull(e.getLocalizedMessage()));
                                            Toast.makeText(getContext(), "Error ->"+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 
                                        }
@@ -126,7 +127,7 @@ public class SingleProductFragment extends Fragment {
             obj.Quantity = 1;
 
 
-            _cartItemService.postCartItem(obj);
+            _cartItemService.postCartItem(obj,false);
         });
     }
 

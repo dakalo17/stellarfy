@@ -18,8 +18,6 @@
                 android:layout_height="wrap_content"
                 android:scaleType="fitCenter"
                 android:layout_weight=".75"
-
-
                 />
 
             <RelativeLayout
@@ -87,6 +85,18 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUpdateQuantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/tvQuantityCartItemContainer"
+                    android:text="@string/update"
+
+
+                    />
 
 
             </RelativeLayout>

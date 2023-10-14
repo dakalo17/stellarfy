@@ -5,18 +5,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shopandroid.R;
+import com.example.shopandroid.models.JSONObjects.CartItem;
 import com.example.shopandroid.models.JSONObjects.Product;
+import com.example.shopandroid.services.implementations.CartItemService;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,12 +29,14 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
 
     private final ArrayList<Product> _products ;
     private final Context _context;
+    private CartItemService _service;
 
     public CartItemsAdapter(ArrayList<Product> products, Context context) {
 
         _products = products;
 
         _context = context;
+        _service = new CartItemService(_context);
     }
 
     @NonNull
@@ -51,10 +57,24 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
                 String.valueOf(_products.get(position).price*_products.get(position).quantity) ));
         holder.tvQuantityCartItem.setText(String.valueOf(_products.get(position).quantity));
 
+
+        holder.btnUpdateQuantity.setOnClickListener(e->{
+            //
+            var cartItem = new CartItem();
+
+            cartItem.Quantity =Integer.parseInt( Objects.requireNonNull(holder.tvQuantityCartItem.getText()).toString());
+            cartItem.Price = _products.get(position).price;
+            cartItem.Fk_Product_Id = _products.get(position).id;
+            cartItem.Fk_Order_Id = -1;
+
+
+
+            _service.postCartItem(cartItem,true);
+        });
+
         final int finalPosition = position;
         Picasso.get().load(_products.get(position).imageLink).
                 error(R.drawable.ic_catalogbg).
-
                 fetch(new Callback() {
                     @Override
                     public void onSuccess() {
@@ -70,7 +90,7 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
 
                                     @Override
                                     public void onError(Exception e) {
-                                        Log.e("Products catalog", e.getLocalizedMessage());
+                                        Log.e("Products catalog", Objects.requireNonNull(e.getLocalizedMessage()));
                                         Toast.makeText(_context, "Error ->" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
 
                                     }
@@ -104,6 +124,8 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
         public TextInputLayout tvQuantityCartItemContainer;
         public TextInputEditText tvQuantityCartItem;
 
+        public Button btnUpdateQuantity;
+
         public CartItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -112,6 +134,7 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
             tvProductPriceCartItem = itemView.findViewById(R.id.tvProductPriceCartItem);
             tvQuantityCartItemContainer = itemView.findViewById(R.id.tvQuantityCartItemContainer);
             tvQuantityCartItem = itemView.findViewById(R.id.tvQuantityCartItem);
+            btnUpdateQuantity = itemView.findViewById(R.id.btnUpdateQuantity);
         }
     }
 }

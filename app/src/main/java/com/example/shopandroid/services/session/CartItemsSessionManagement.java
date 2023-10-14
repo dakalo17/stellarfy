@@ -43,6 +43,22 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
         String json = _gson.toJson(obj);
         return editor.putString(SESSION_KEY,json).commit();
     }
+
+    public int getQuantity (int productId){
+        int qty=0;
+        String json = sharedPreferences.getString(SESSION_KEY,DEFAULT_JSON_STRING);
+
+        JsonArray jsonArray = JsonParser.parseString(json).getAsJsonArray();
+        for (JsonElement elem: jsonArray) {
+            JsonObject jsonObject = elem.getAsJsonObject();
+            if(jsonObject.get("id").getAsString().equals(String.valueOf(productId))){
+
+                qty = jsonObject.get("quantity").getAsInt();
+                break;
+            }
+        }
+        return qty;
+    }
     public boolean editSessionJSON(Product obj) {
         String json = sharedPreferences.getString(SESSION_KEY,DEFAULT_JSON_STRING);
 

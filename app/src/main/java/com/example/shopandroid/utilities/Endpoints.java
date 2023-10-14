@@ -20,7 +20,7 @@ public class Endpoints {
 
 
 
-    public static final String BASE_URL="https://f43f-197-90-236-105.ngrok-free.app";
+    public static final String BASE_URL="https://2664-197-90-236-105.ngrok-free.app";
     public static final String B1ASE_URL="https://localhost:7159";
 
 }

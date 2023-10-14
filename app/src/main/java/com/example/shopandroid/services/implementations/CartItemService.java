@@ -54,8 +54,8 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
         });
     }
 
-    public void postCartItem(CartItem cartItem){
-        Call<Product> call =api.postCartItem(cartItem);
+    public void postCartItem(CartItem cartItem,boolean isUpdate){
+        Call<Product> call =api.postCartItem(cartItem,isUpdate);
 
         call.enqueue(new Callback<>() {
             @Override
