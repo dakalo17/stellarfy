@@ -51,6 +51,8 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
     @Override
     public void onBindViewHolder(@NonNull CartItemViewHolder holder, int position) {
 
+        //don't display if qty of product is 0
+        if(_products.get(position).quantity == 0) return;
     try {
         holder.tvProductTitleCartItem.setText(_products.get(position).name);
         holder.tvProductPriceCartItem.setText("R ".concat(
