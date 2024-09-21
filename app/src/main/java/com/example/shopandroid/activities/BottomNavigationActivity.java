@@ -1,38 +1,43 @@
 package com.example.shopandroid.activities;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.annotation.SuppressLint;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.example.shopandroid.HomeActivity;
+
+
 import com.example.shopandroid.R;
 import com.example.shopandroid.fragments.CartFragment;
 import com.example.shopandroid.fragments.CatalogFragment;
+import com.example.shopandroid.models.JSONObjects.Product;
 import com.example.shopandroid.models.jwt.RefreshToken;
 import com.example.shopandroid.services.implementations.CartItemService;
 import com.example.shopandroid.services.session.CartItemsSessionManagement;
 import com.example.shopandroid.services.session.RefreshTokenSessionManagement;
 import com.example.shopandroid.services.session.UserSessionManagement;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
+import com.google.android.material.badge.ExperimentalBadgeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+import java.util.Objects;
 
+@OptIn(markerClass = ExperimentalBadgeUtils.class)
 
 public class BottomNavigationActivity extends AppCompatActivity {
 
@@ -40,15 +45,22 @@ public class BottomNavigationActivity extends AppCompatActivity {
     private final FragmentManager _fragmentManager =getSupportFragmentManager();
     private Fragment _fragment=null;
     private CartItemService _cartItemService;
+    private TextView tvCartItemsCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation);
 
-        checkSession();
-        setHomeFragment();
+        Toolbar mToolbar =  findViewById(R.id.topAppBar);
+        setSupportActionBar(mToolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
         init();
+        checkSession();
+        //navigateToCatalog();
+        setHomeFragment();
+
         events();
     }
 
@@ -81,7 +93,8 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
         _cartItemService= new CartItemService(getApplicationContext());
 
-        _cartItemService.getCartItems();
+        _cartItemService.getCartItems(tvCartItemsCount);
+
     }
     private void setHomeFragment() {
         //Todo check user roles
@@ -93,11 +106,11 @@ public class BottomNavigationActivity extends AppCompatActivity {
     private void init(){
         bottom_navigation = findViewById(R.id.bottom_navigation);
 
-
+        tvCartItemsCount = findViewById(R.id.tvCartItemsCount);//(TextView) bottom_navigation.getMenu().findItem(R.id.iCartWithBadge);
     }
 
     private void events() {
-        bottom_navigation.setOnItemReselectedListener(item -> {
+        bottom_navigation.setOnItemSelectedListener(item -> {
 
 
             switch(item.getItemId()){
@@ -112,9 +125,12 @@ public class BottomNavigationActivity extends AppCompatActivity {
 
                 logout();
                 }break;
+                case R.id.iCartWithBadge:{
+                    _fragment = new CartFragment();
+                }
 
                 default:{
-
+                    return false;
                 }
 
 
@@ -128,7 +144,7 @@ public class BottomNavigationActivity extends AppCompatActivity {
                         .addToBackStack("")
                         .commit();
             }
-
+            return true;
         });
 
     }
@@ -149,14 +165,87 @@ public class BottomNavigationActivity extends AppCompatActivity {
         return compare < 0;
     }
 
-    private void logout(){
-        var userSession = new UserSessionManagement(getApplicationContext(),false);
 
-        if(userSession.isValidSession()){
-            userSession.removeSession();
-            startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
 
+
+    public void navigateToCatalog(){
+        invalidateOptionsMenu();
+
+        setHomeFragment();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.mn_top_navigation,menu);
+
+        MenuItem cartItem = menu.findItem(R.id.iCartWithBadge);
+        View actionView = cartItem.getActionView();
+
+
+
+        // Add a badge to the cart item
+        int count = countCartItems();
+        addCartBadge(cartItem,count);
+
+        return true;
+
+    }
+
+    private int countCartItems() {
+        CartItemsSessionManagement cartItemsSessionManagement =
+                new CartItemsSessionManagement(getApplicationContext(),false);
+
+        var items = cartItemsSessionManagement.isValidSessionReturn();
+        int count = 0;
+        for (Product item:items.first) {
+            count += item.quantity ;
         }
+
+
+        return count;
+    }
+
+    public void addCartBadge(MenuItem cartItem,int count){
+        BadgeDrawable badgeDrawable = BadgeDrawable.create(this);
+        View actionView = cartItem.getActionView();
+
+        if(!(count > 0)) {
+            if(actionView != null) {
+                ImageView cartIcon = actionView.findViewById(R.id.imgCartIcon);
+                BadgeUtils.detachBadgeDrawable(badgeDrawable,cartIcon);
+            }
+
+            return;
+        }
+
+        // Create a BadgeDrawable instance
+
+        badgeDrawable.setNumber(count); // Set the cart count
+        badgeDrawable.setVisible(true); // Ensure the badge is visible
+        badgeDrawable.setHorizontalOffset(55); // Adjust horizontal offset as needed
+        badgeDrawable.setVerticalOffset(5);
+        badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
+
+
+        if (actionView != null) {
+            // Attach the badge to the ImageView in the action layout
+            ImageView cartIcon = actionView.findViewById(R.id.imgCartIcon);
+            BadgeUtils.attachBadgeDrawable(badgeDrawable, cartIcon);
+        } else {
+            // Fallback: Attach the badge to the MenuItem icon
+            BadgeUtils.attachBadgeDrawable(badgeDrawable, findViewById(R.id.iCartWithBadge), null);
+        }
+
+//
+//        if (cartItem.getActionView() != null) {
+//            // Custom layout scenario: Find the ImageView inside the custom action layout and attach the badge to it
+//            ImageView cartIcon = cartItem.getActionView().findViewById(R.id.imgCartIcon);
+//            BadgeUtils.attachBadgeDrawable(badgeDrawable, cartIcon);
+//        } else {
+//            // No custom layout: Attach the badge to the menu item's icon (fallback to default icon)
+//            BadgeUtils.attachBadgeDrawable(badgeDrawable, findViewById(R.id.iCartWithBadge), null);
+//        }
+
     }
     @Override
     public void onBackPressed() {
@@ -165,6 +254,20 @@ public class BottomNavigationActivity extends AppCompatActivity {
             getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
+        }
+    }
+//
+//    public MenuItem getCartItem() {
+//        return menu.findItem(R.id.iCartWithBadge);
+//    }
+
+    private void logout(){
+        var userSession = new UserSessionManagement(getApplicationContext(),false);
+
+        if(userSession.isValidSession()){
+            userSession.removeSession();
+            startActivity(new Intent(BottomNavigationActivity.this, LoginActivity.class));
+
         }
     }
 }

@@ -14,14 +14,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shopandroid.R;
+import com.example.shopandroid.activities.BottomNavigationActivity;
 import com.example.shopandroid.models.JSONObjects.CartItem;
 import com.example.shopandroid.models.JSONObjects.Product;
 import com.example.shopandroid.services.endpoints.ICartItemEndpoint;
 import com.example.shopandroid.services.implementations.CartItemService;
+import com.example.shopandroid.services.session.CartItemsSessionManagement;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.Objects;
 
 import static com.example.shopandroid.utilities.Misc.SINGLE_PRODUCT_KEY;
@@ -36,6 +40,8 @@ public class SingleProductFragment extends Fragment {
     private TextView tvDescriptionProductView;
     private CartItemService _cartItemService;
 
+    private TextView tvCartItemsCount;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -43,7 +49,7 @@ public class SingleProductFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_single_product, container, false);
 
         init(view);
-        events();
+        events(view);
         start(view);
         return view;
     }
@@ -54,6 +60,7 @@ public class SingleProductFragment extends Fragment {
         tvProductPriceView = view.findViewById(R.id.tvProductPriceView);
         tvDescriptionProductView = view.findViewById(R.id.tvDescriptionProductView);
 
+        tvCartItemsCount = view.findViewById(R.id.tvCartItemsCount);
         _cartItemService = new CartItemService(getContext());
     }
 
@@ -110,8 +117,9 @@ public class SingleProductFragment extends Fragment {
 
 
 
-    private void events() {
+    private void events(View view) {
         btnAddToCartView.setOnClickListener(e->{
+
             //Todo add to cart
             var product = getProduct();
 
@@ -128,7 +136,35 @@ public class SingleProductFragment extends Fragment {
 
 
             _cartItemService.postCartItem(obj,false);
+
+            //lastly update counter
+            BottomNavigationActivity activity = (BottomNavigationActivity) getActivity();
+
+
+            var countItems =countCartItems();
+//            if(countItems > 0 ){
+//                tvCartItemsCount.setVisibility(View.VISIBLE);
+//                if(countItems > 99)
+//                    tvCartItemsCount.setText(MessageFormat.format("{0}+", countItems));
+//
+//            }else{
+//                tvCartItemsCount.setVisibility(View.GONE);
+//            }
+
+//            if(activity !=null)
+//                activity.updateBadge(tvCartItemsCount,countItems);
         });
+    }
+
+    private int countCartItems() {
+        CartItemsSessionManagement cartItemsSessionManagement =
+                new CartItemsSessionManagement(requireActivity().getApplicationContext(),false);
+
+        var items = cartItemsSessionManagement.isValidSessionReturn();
+        if(items.second){
+            return items.first.size();
+        }
+        return 0;
     }
 
     private Product getProduct() {

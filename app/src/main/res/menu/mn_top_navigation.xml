@@ -4,11 +4,21 @@
 
 
 
-    <item android:icon="@drawable/ic_notification"
-        android:title="@string/notification"
+<!--    <item android:icon="@drawable/ic_notification"-->
+<!--        android:title="@string/notification"-->
+<!--        app:showAsAction="always"-->
+<!--        android:actionLayout="@layout/activity_bottom_navigation"-->
+<!--        android:id="@+id/iNotificationTopNav"-->
+<!--        />-->
+
+    <item
+        android:icon="@drawable/ic_cart"
+        android:title="@string/cart"
         app:showAsAction="always"
-        android:actionLayout="@layout/activity_bottom_navigation"
-        android:id="@+id/iNotificationTopNav"
+
+        android:id="@+id/iCartWithBadge"
+
+
         />
 
 

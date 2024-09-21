@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    >
+
+    <ImageView
+        android:id="@+id/imgCartIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="TODO"
+        android:src="@drawable/ic_cart"/>
+
+    <TextView
+        android:id="@+id/tvCartItemsCount"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:textSize="12sp"
+        android:text="0"
+        android:textColor="@color/white"
+
+        android:padding="3dp"
+        android:layout_gravity="end|top"
+        android:gravity="center"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="40dp"
+        android:background="@drawable/cartcounterbadge"
+android:visibility="gone"
+        tools:ignore="SmallSp" />
+</FrameLayout>

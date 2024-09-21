@@ -2,6 +2,8 @@ package com.example.shopandroid.services.implementations;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,9 @@ import com.example.shopandroid.models.JSONObjects.Product;
 import com.example.shopandroid.services.endpoints.ICartItemEndpoint;
 import com.example.shopandroid.services.session.CartItemsSessionManagement;
 
+import org.w3c.dom.Text;
+
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +34,7 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
     }
 
 
-    public void getCartItems(){
+    public void getCartItems(TextView tvCartItemsCount){
         Call<ArrayList<Product>> call = api.getCartItems();
 
         call.enqueue(new Callback<>() {
@@ -44,6 +49,18 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
                 //add to the session/cache as NEW
                 var cartSession = new CartItemsSessionManagement(_context,true);
                 cartSession.saveSession(res);
+
+
+
+                var countItems =res.size();
+                if(countItems > 0 ){
+                    tvCartItemsCount.setVisibility(View.VISIBLE);
+                    if(countItems > 99)
+                        tvCartItemsCount.setText(MessageFormat.format("{0}+", countItems));
+
+                }else{
+                    tvCartItemsCount.setVisibility(View.GONE);
+                }
 
             }
 
@@ -69,12 +86,34 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
                 var sessionValidity = cartSession.isValidSessionReturn();
                 if(sessionValidity.second) {
                     //update the quantity
-                    product.quantity = cartItem.Quantity;
+                    //product.quantity = cartItem.Quantity;
 
-                    if (!cartSession.editSessionJSON(product))
+                    //
+                    var items = cartSession.getSession();
+                    boolean updated = false;
+                    for (int i = 0; i < items.size(); i++) {
+                        if(items.get(i).id == product.id){
+                            items.get(i).quantity = cartItem.Quantity;
+                            updated = true;
+                            cartSession.saveSession(items);
+                            break;
+                        }else{
+                            //
+                            if (cartSession.editSessionJSON(product)){
+                                updated = true;
+
+                                Toast.makeText(_context, "Y", Toast.LENGTH_LONG).show();
+                                break;
+
+                            }
+                        }
+                    }
+
+                    //HERE IS THE PROBLEM
+                    //cartSession.editSessionJSON(product)
+                    if (!updated)
                         Toast.makeText(_context, "Cart Item ERROR NOT UPDATED", Toast.LENGTH_LONG).show();
-                    else
-                        Toast.makeText(_context, "Y", Toast.LENGTH_LONG).show();
+
                 }else
                     Toast.makeText(_context, "CART CACHE IS INVALID", Toast.LENGTH_LONG).show();
             }

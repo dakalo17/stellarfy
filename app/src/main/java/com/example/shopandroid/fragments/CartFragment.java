@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.shopandroid.R;
 import com.example.shopandroid.adapters.CartItemsAdapter;
@@ -28,6 +29,7 @@ public class CartFragment extends Fragment {
     private RecyclerView rvCartItems;
     private CartItemService _service;
     private static final int RECYCLER_VIEW_COLUMN_COUNT = 1;
+    private TextView tvCartItemsCount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,6 +46,8 @@ public class CartFragment extends Fragment {
     private void init(View view) {
         _service = new CartItemService(getContext());
         rvCartItems = view.findViewById(R.id.rvCartItems);
+
+        tvCartItemsCount = view.findViewById(R.id.tvCartItemsCount);
     }
 
     private void start(View view) {
@@ -53,7 +57,9 @@ public class CartFragment extends Fragment {
                         getApplicationContext(),
                         RECYCLER_VIEW_COLUMN_COUNT);
 
+        // pull cart items
 
+        _service.getCartItems(tvCartItemsCount);
 
         var cartItemSession = new CartItemsSessionManagement(requireActivity().getApplicationContext(),false);
         var isValidSession = cartItemSession.isValidSessionReturn();
@@ -62,7 +68,7 @@ public class CartFragment extends Fragment {
 
         CartItemsAdapter cartItemsAdapter =
                 new CartItemsAdapter((ArrayList<Product>) isValidSession.first,requireContext());
-
+        cartItemsAdapter.updateData(cartItemSession.getSession());
         rvCartItems.setLayoutManager(gridLayoutManager);
         rvCartItems.setAdapter(cartItemsAdapter);
 

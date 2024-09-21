@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shopandroid.HomeActivity;
@@ -32,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private ImageButton imgBtnForgot;
     private ImageButton imgBtnNotSignedUp;
 
-    private TextInputEditText tvUsername;
+        private TextInputEditText tvUsername;
     private TextInputLayout tvUsernameContainer;
 
     private TextInputEditText tvPassword;
@@ -42,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private UserSessionManagement _userSession;
 
     private CartItemService _cartItemService;
+    private TextView tvCartItemsCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,8 @@ public class LoginActivity extends AppCompatActivity {
         tvUsernameContainer = findViewById(R.id.tvUsernameContainer);
         tvPassword = findViewById(R.id.tvPassword);
         tvPasswordContainer = findViewById(R.id.tvPasswordContainer);
+
+        tvCartItemsCount = findViewById(R.id.tvCartItemsCount);
 
         RefreshTokenSessionManagement refreshTokenSession =
                 new RefreshTokenSessionManagement(getApplicationContext(),false);
@@ -105,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
     private void pullCarts(){
         _cartItemService= new CartItemService(getApplicationContext());
 
-        _cartItemService.getCartItems();
+        _cartItemService.getCartItems(tvCartItemsCount);
 
     }
 }

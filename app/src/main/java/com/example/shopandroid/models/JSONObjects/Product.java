@@ -17,4 +17,9 @@ public class Product implements Serializable {
     public String imageLink ;
     @SuppressWarnings("quantity")
     public int quantity;
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

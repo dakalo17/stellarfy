@@ -14,12 +14,14 @@ import com.example.shopandroid.R;
 import com.example.shopandroid.models.JSONObjects.CartItem;
 import com.example.shopandroid.models.JSONObjects.Product;
 import com.example.shopandroid.services.implementations.CartItemService;
+import com.example.shopandroid.services.session.CartItemsSessionManagement;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,12 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
 
         _context = context;
         _service = new CartItemService(_context);
+    }
+
+    public void updateData(List<Product> products) {
+        _products.clear();
+        _products.addAll(products);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -64,14 +72,17 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
             //
             var cartItem = new CartItem();
 
-            cartItem.Quantity =Integer.parseInt( Objects.requireNonNull(holder.tvQuantityCartItem.getText()).toString());
+            cartItem.Quantity =
+                    Integer.parseInt( Objects.requireNonNull(holder.tvQuantityCartItem.getText()).toString());
             cartItem.Price = _products.get(position).price;
             cartItem.Fk_Product_Id = _products.get(position).id;
             cartItem.Fk_Order_Id = -1;
 
 
-
+            //indicate that you are not inc or dec but replacing , eg. quantity = 8 not qu = 8 + 8
             _service.postCartItem(cartItem,true);
+            var cartSession = new CartItemsSessionManagement(_context,false);
+            var obj = cartSession.getSession();
         });
 
         final int finalPosition = position;
