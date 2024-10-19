@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Pair;
 
+import androidx.annotation.NonNull;
+
+import com.example.shopandroid.models.JSONObjects.CartItem;
 import com.example.shopandroid.models.JSONObjects.Product;
 
 import com.google.gson.Gson;
@@ -14,6 +17,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class CartItemsSessionManagement implements ISessionManagement<List<Product>> {
@@ -59,6 +63,15 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
         }
         return qty;
     }
+    public boolean deleteCartItem(int productIndex){
+        String json = sharedPreferences.getString(SESSION_KEY,DEFAULT_JSON_STRING);
+
+        JsonArray jsonArray = JsonParser.parseString(json).getAsJsonArray();
+        jsonArray.remove(productIndex);
+
+        return editor.putString(SESSION_KEY,jsonArray.toString()).commit();
+
+    }
     public boolean editSessionJSON(Product obj) {
         String json = sharedPreferences.getString(SESSION_KEY,DEFAULT_JSON_STRING);
 
@@ -70,7 +83,11 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
             JsonObject cartJSONObj =element.getAsJsonObject();
             if(cartJSONObj.get("id").getAsString().equals(String.valueOf(obj.id))){
                 int currQuantity = cartJSONObj.get("quantity").getAsInt();
-                cartJSONObj.addProperty("quantity",currQuantity+obj.quantity);
+                
+                //if its the same amount just return the function
+                if(currQuantity != obj.quantity)
+                    cartJSONObj.addProperty("quantity",obj.quantity);
+                
                 insert = false;
                 break;
             }
@@ -78,22 +95,29 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
 
         //if not found to update -> insert
         if(insert){
-            JsonObject newProduct = new JsonObject();
-
-            newProduct.addProperty("id",obj.id);
-            newProduct.addProperty("name",obj.name);
-            newProduct.addProperty("quantity",obj.quantity);
-            newProduct.addProperty("price",obj.price);
-            newProduct.addProperty("description",obj.description);
-            newProduct.addProperty("price",obj.price);
-            newProduct.addProperty("specialPrice",obj.specialPrice);
-            newProduct.addProperty("imageLink",obj.imageLink);
+            var newProduct = getJsonObject(obj);
 
             jsonArray.add(newProduct);
         }
 
         return editor.putString(SESSION_KEY,jsonArray.toString()).commit();
     }
+
+    @NonNull
+    private static JsonObject getJsonObject(Product obj) {
+        var newProduct = new JsonObject();
+
+        newProduct.addProperty("id", obj.id);
+        newProduct.addProperty("name", obj.name);
+        newProduct.addProperty("quantity", obj.quantity);
+        newProduct.addProperty("price", obj.price);
+        newProduct.addProperty("description", obj.description);
+        newProduct.addProperty("price", obj.price);
+        newProduct.addProperty("specialPrice", obj.specialPrice);
+        newProduct.addProperty("imageLink", obj.imageLink);
+        return newProduct;
+    }
+
     @Override
     public List<Product> getSession() {
         String json = sharedPreferences.getString(SESSION_KEY,DEFAULT_JSON_STRING);
@@ -117,5 +141,28 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
     @Override
     public void removeSession() {
         editor.putString(SESSION_KEY,DEFAULT_JSON_STRING).commit();
+    }
+
+    public boolean deleteItem(int productId) {
+        String json = sharedPreferences.getString(SESSION_KEY,DEFAULT_JSON_STRING);
+
+        //all items from cart
+        JsonArray jsonArray = JsonParser.parseString(json).getAsJsonArray();
+
+        //find and edit
+
+        JsonObject cartJSONObj = null;
+        for (JsonElement element : jsonArray) {
+            cartJSONObj = element.getAsJsonObject();
+
+            if (!cartJSONObj.get("id").getAsString().equals(String.valueOf(productId)))
+                break;
+
+        }
+        if(cartJSONObj != null)
+            jsonArray.remove(cartJSONObj);
+
+
+        return editor.putString(SESSION_KEY,jsonArray.toString()).commit();
     }
 }

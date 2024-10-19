@@ -20,4 +20,6 @@
     <string name="enter_quantity">Enter Quantity</string>
     <string name="quantity">Quantity</string>
     <string name="update">Update</string>
+    <string name="blank">blank</string>
+    <string name="todo">TODO</string>
 </resources>

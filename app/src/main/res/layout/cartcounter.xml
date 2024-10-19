@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,16 +7,18 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     >
-
+    <!-- {@deprecated Use foobar instead.}
+        TODO: We are using a different layout
+    -->
     <ImageView
-        android:id="@+id/imgCartIcon"
+        android:id="@+id/imgCartIconDeprecated"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="TODO"
         android:src="@drawable/ic_cart"/>
 
     <TextView
-        android:id="@+id/tvCartItemsCount"
+        android:id="@+id/tvCartItemsCountDeprecated"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:textSize="12sp"

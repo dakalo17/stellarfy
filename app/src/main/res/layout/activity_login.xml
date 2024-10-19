@@ -7,7 +7,9 @@
     android:background="@drawable/back"
     tools:context=".activities.LoginActivity">
 
-<include layout="@layout/cartcounter"/>
+<include layout="@layout/activity_bottom_navigation"
+    android:id="@+id/botNav"
+    android:visibility="gone"/>
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

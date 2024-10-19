@@ -6,24 +6,61 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
 
+    android:id="@+id/scrvCart"
     android:layout_marginTop="8dp"
     android:layout_marginStart="8dp"
-    tools:context=".fragments.CartFragment">
+    tools:context=".fragments.CartFragment"
+    android:tag="CartFragment"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:id="@+id/rlEmptyCart"
+            android:background="@color/white"
+            android:visibility="gone"
+            >
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EMPTY CART"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:textSize="60sp"
+                android:textColor="@color/black"
+                android:id="@+id/tvEmptyCart"
+
+
+                />
+            <ImageView
+                android:layout_below="@+id/tvEmptyCart"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/ic_cart"
+                android:layout_centerHorizontal="true"
+
+            />
+        </RelativeLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvCartItems"
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
+            android:visibility="gone"
 
             />
-        <include layout="@layout/cartcounter"
-            android:visibility="gone"/>
+<!--        <include -->
+<!--            layout="@layout/activity_bottom_navigation"-->
+<!--            android:visibility="gone"-->
+<!--            />-->
     </LinearLayout>
 
 

@@ -1,16 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/clCart"
+
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/imgSwipeDelete"
+        android:layout_width="100dp"
+        android:layout_height="105dp"
+        android:contentDescription="TODO"
+        android:src="@drawable/mi_delete"
+        android:layout_marginStart="250dp"
+
+        android:visibility="gone"
+        android:layout_marginEnd="20dp"
+
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="5dp"
+        />
+<com.google.android.material.card.MaterialCardView
+
+    android:id="@+id/mcvItem"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+
+    android:layout_marginBottom="1dp"
+    android:layout_marginTop="5dp"
+
+    android:clickable="true"
+    android:focusable="true"
+    android:checkable="true"
+    app:cardElevation="10dp"
+    app:strokeColor="@color/material_on_surface_stroke"
+    app:strokeWidth="1dp"
+
 
     >
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="10dp"
+            >
             <ImageView
                 android:id="@+id/imgProductCartItem"
                 android:src="@drawable/ic_catalogbg"
@@ -101,4 +139,8 @@
 
             </RelativeLayout>
         </LinearLayout>
-    </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

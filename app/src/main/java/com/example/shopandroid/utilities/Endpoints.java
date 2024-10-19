@@ -17,10 +17,10 @@ public class Endpoints {
     public static final String CART_PRODUCT_CONTROLLER="api/CartItem";
     public static final String POST_CART_PRODUCT = CART_PRODUCT_CONTROLLER+"/PostCartItem";
     public static final String GET_CART_PRODUCTS = CART_PRODUCT_CONTROLLER+"/GetCartItems";
+    public static final String DELETE_CART_PRODUCT = CART_PRODUCT_CONTROLLER + "/DeleteCartItem/{productId}";
 
 
-
-    public static final String BASE_URL="https://b2a9-197-90-236-105.ngrok-free.app";
+    public static final String BASE_URL="https://stable-frankly-marmoset.ngrok-free.app";
     public static final String B1ASE_URL="https://localhost:7159";
 
 }

@@ -2,10 +2,17 @@ package com.example.shopandroid.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,20 +24,20 @@ import com.example.shopandroid.R;
 import com.example.shopandroid.activities.BottomNavigationActivity;
 import com.example.shopandroid.models.JSONObjects.CartItem;
 import com.example.shopandroid.models.JSONObjects.Product;
-import com.example.shopandroid.services.endpoints.ICartItemEndpoint;
 import com.example.shopandroid.services.implementations.CartItemService;
 import com.example.shopandroid.services.session.CartItemsSessionManagement;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
+import com.google.android.material.badge.ExperimentalBadgeUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
-import java.text.MessageFormat;
 import java.util.Objects;
 
 import static com.example.shopandroid.utilities.Misc.SINGLE_PRODUCT_KEY;
 
-public class SingleProductFragment extends Fragment {
+public class SingleProductFragment extends Fragment implements MenuProvider {
 
 
     private Button btnAddToCartView;
@@ -42,16 +49,111 @@ public class SingleProductFragment extends Fragment {
 
     private TextView tvCartItemsCount;
 
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        //requireActivity().addMenuProvider((BottomNavigationActivity)requireActivity(), getViewLifecycleOwner());
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+   //     requireActivity().removeMenuProvider((BottomNavigationActivity)requireActivity());
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_single_product, container, false);
 
+
+
+
+
         init(view);
         events(view);
         start(view);
         return view;
+    }
+
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+
+        menuInflater.inflate(R.menu.mn_top_navigation,menu);
+
+
+        CartItemsSessionManagement cartSess = new CartItemsSessionManagement(requireContext(),false);
+        var cart = cartSess.isValidSessionReturn();
+
+        MenuItem cartBadgeItem = menu.findItem(R.id.iCartWithBadge);
+
+        if(cart.second) {
+            int sum =0;
+            for(var item :cart.first){
+                sum+=item.quantity;
+            }
+
+         //   updateCartBadge(cartBadgeItem,sum);
+
+        }
+
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        return id == R.id.iCartWithBadge;
+    }
+
+
+    @OptIn(markerClass = ExperimentalBadgeUtils.class)
+    public void updateCartBadge(MenuItem cartItem,int count){
+
+
+
+        BadgeDrawable badgeDrawable = BadgeDrawable.create(requireContext());
+        View actionView = cartItem.getActionView();
+
+
+
+        if(!(count > 0)) {
+            if(actionView != null) {
+                ImageView cartIcon = actionView.findViewById(R.id.imgCartIcon);
+                BadgeUtils.detachBadgeDrawable(badgeDrawable,cartIcon);
+            }
+
+            return;
+        }
+
+
+
+        // Create a BadgeDrawable instance
+
+        badgeDrawable.setNumber(count); // Set the cart count
+        badgeDrawable.setVisible(true); // Ensure the badge is visible
+        badgeDrawable.setHorizontalOffset(55); // Adjust horizontal offset as needed
+        badgeDrawable.setVerticalOffset(17);
+        badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
+
+
+        if (actionView != null) {
+            // Attach the badge to the ImageView in the action layout
+
+            ImageView cartIcon = actionView.findViewById(R.id.imgCartIcon);
+
+            BadgeUtils.detachBadgeDrawable(badgeDrawable,cartIcon);
+            BadgeUtils.attachBadgeDrawable(badgeDrawable, cartIcon);
+        } else {
+            //  Attach the badge to the MenuItem icon
+            //BadgeUtils.attachBadgeDrawable(badgeDrawable, findViewById(R.id.iCartWithBadge), null);
+        }
+
+
     }
     private void init(View view) {
         btnAddToCartView = view.findViewById(R.id.btnAddToCartView);
@@ -174,10 +276,10 @@ public class SingleProductFragment extends Fragment {
         }
 
         Serializable getProduct = bundle.getSerializable(SINGLE_PRODUCT_KEY);
-        Product product = null;
-        if (getProduct instanceof Product)
-            product = (Product) getProduct;
 
-        return product;
+        return getProduct instanceof Product ? (Product) getProduct : null;
+
     }
+
+
 }

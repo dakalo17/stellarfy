@@ -2,6 +2,7 @@ package com.example.shopandroid.fragments;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,7 @@ import com.example.shopandroid.activities.BottomNavigationActivity;
 import com.example.shopandroid.adapters.CatalogProductAdapter;
 import com.example.shopandroid.models.JSONObjects.Product;
 import com.example.shopandroid.services.implementations.ProductService;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -37,6 +39,7 @@ public class CatalogFragment extends Fragment {
     private CatalogProductAdapter cataloproductgProductAdapter;
 
     private ArrayList<Product> List;
+    private MaterialToolbar topAppBar;
 
     private static final int RECYCLER_VIEW_COLUMN_COUNT = 3;
     private ProductService productService;
@@ -59,9 +62,14 @@ public class CatalogFragment extends Fragment {
 //        }
         populateProducts(view);
         init(view);
+        populateCartItems(view);
         events(view);
         start(view);
         return view;
+    }
+
+    private void populateCartItems(View view) {
+        topAppBar = view.findViewById(R.id.topAppBar);
     }
 
     private void populateProducts(View view) {

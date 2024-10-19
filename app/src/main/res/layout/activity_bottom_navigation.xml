@@ -8,7 +8,6 @@
     android:background="@color/black"
     tools:context=".activities.BottomNavigationActivity">
 
-    <include layout="@layout/cartcounter" android:visibility="gone"/>
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
