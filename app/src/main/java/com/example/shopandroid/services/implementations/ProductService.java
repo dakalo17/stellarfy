@@ -75,8 +75,9 @@ public class ProductService extends BaseService<IProductEndpoint>{
             @Override
             public void onResponse(@NonNull Call<ArrayList<Product>> call, Response<ArrayList<Product>> response) {
 
-                if (!response.isSuccessful()) return;
 
+                if (!response.isSuccessful()) return;
+                /* TODO resolve crash */
                 GridLayoutManager gridLayoutManager =
                         new GridLayoutManager(_fragment
                                 .requireActivity()

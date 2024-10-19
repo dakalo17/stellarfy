@@ -6,12 +6,16 @@
     android:id="@+id/clCart"
 
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
+
+    >
     <ImageView
         android:id="@+id/imgSwipeDelete"
         android:layout_width="100dp"
         android:layout_height="105dp"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/todo"
         android:src="@drawable/mi_delete"
         android:layout_marginStart="250dp"
 
@@ -25,7 +29,7 @@
 
     android:id="@+id/mcvItem"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="140dp"
 
     android:layout_marginStart="20dp"
     android:layout_marginEnd="20dp"
@@ -47,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="10dp"
+            android:padding="5dp"
             >
             <ImageView
                 android:id="@+id/imgProductCartItem"

@@ -32,14 +32,17 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.badge.ExperimentalBadgeUtils;
+import com.google.android.material.loadingindicator.LoadingIndicator;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 
-    public class CartFragment extends Fragment implements MenuProvider {
+public class CartFragment extends Fragment implements MenuProvider {
 
     private RecyclerView rvCartItems;
     private CartItemService _service;
+    private CircularProgressIndicator _cartLoadingIndicator;
     private static final int RECYCLER_VIEW_COLUMN_COUNT = 1;
-
+    private View thisView;
 
 
     private RelativeLayout rlEmptyCart;
@@ -53,15 +56,22 @@ import com.google.android.material.badge.ExperimentalBadgeUtils;
 
         init(view);
         events(view);
-        start(view);
-        
+
+        thisView = view;
+
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        start(thisView);
     }
 
     private void init(View view) {
         _service = new CartItemService(getContext());
         rvCartItems = view.findViewById(R.id.rvCartItems);
-
+        _cartLoadingIndicator = view.findViewById(R.id.cartLoadingIndicator);
 
 
 
@@ -95,7 +105,7 @@ import com.google.android.material.badge.ExperimentalBadgeUtils;
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
-        return true;//id == R.id.iCartWithBadge;
+        return id == R.id.iCartWithBadge;
     }
 
 
@@ -147,6 +157,8 @@ import com.google.android.material.badge.ExperimentalBadgeUtils;
 
     }
 
+
+
     private void start(View view) {
         GridLayoutManager gridLayoutManager =
                 new GridLayoutManager(
@@ -156,16 +168,24 @@ import com.google.android.material.badge.ExperimentalBadgeUtils;
 
         // pull cart items
 
-        _service.getCartItemsMain(rvCartItems,rlEmptyCart);
+        _service.getCartItemsMain(rvCartItems,rlEmptyCart,_cartLoadingIndicator);
 
         var cartItemSession =
                 new CartItemsSessionManagement(requireActivity().getApplicationContext(),false);
-        var isValidSession = cartItemSession.isValidSessionReturn();
+        var cart = cartItemSession.isValidSessionReturn();
 
-        if(!isValidSession.second)return;
+//        if(!cart.second)return;
+//
+//        if(cart.first.isEmpty()){
+//            rlEmptyCart.setVisibility(View.GONE);
+//            rvCartItems.setVisibility(View.GONE);
+//            return;
+//        }
+//        //_cartLoadingIndicator.setVisibility(View.GONE);
+
 
         CartItemsAdapter cartItemsAdapter =
-                new CartItemsAdapter(isValidSession.first,requireContext(),rlEmptyCart,rvCartItems,requireActivity());
+                new CartItemsAdapter(cart.first,requireContext(),rlEmptyCart,rvCartItems,requireActivity());
         cartItemsAdapter.updateData(cartItemSession.getSession());
 
         rvCartItems.setLayoutManager(gridLayoutManager);

@@ -21,6 +21,6 @@ public class Endpoints {
 
 
     public static final String BASE_URL="https://stable-frankly-marmoset.ngrok-free.app";
-    public static final String B1ASE_URL="https://localhost:7159";
+    public static final String LOCAL_URL="https://6c261gw7-7159.inc1.devtunnels.ms";
 
 }

@@ -20,6 +20,7 @@ import com.example.shopandroid.models.JSONObjects.CartItem;
 import com.example.shopandroid.models.JSONObjects.Product;
 import com.example.shopandroid.services.endpoints.ICartItemEndpoint;
 import com.example.shopandroid.services.session.CartItemsSessionManagement;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,8 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
         _context = context;
     }
 
-    public void getCartItemsMain(RecyclerView rvCartItems, RelativeLayout rlEmptyCart){
+    public void getCartItemsMain(RecyclerView rvCartItems, RelativeLayout rlEmptyCart,
+                                 CircularProgressIndicator cartLoadingIndicator){
         Call<ArrayList<Product>> call = api.getCartItems();
 
         call.enqueue(new Callback<>() {
@@ -64,6 +66,7 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
                 boolean CartItemsIsGONE = rvCartItems != null && rvCartItems.getVisibility() == View.GONE;
 
                 if(countItems > 0 ) {
+                    cartLoadingIndicator.setVisibility(View.GONE);
                     if (CartItemsIsGONE) {
                         rvCartItems.setVisibility(View.VISIBLE);
                         if (EmptyCartIsVISIBLE)
@@ -74,6 +77,10 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
                     rlEmptyCart.setVisibility(View.VISIBLE);
                     if(rvCartItems != null)
                         rvCartItems.setVisibility(View.GONE);
+                }else {
+
+                    cartLoadingIndicator.setVisibility(View.VISIBLE);
+
                 }
 
             }
