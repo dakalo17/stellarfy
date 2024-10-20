@@ -83,11 +83,11 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
             JsonObject cartJSONObj =element.getAsJsonObject();
             if(cartJSONObj.get("id").getAsString().equals(String.valueOf(obj.id))){
                 int currQuantity = cartJSONObj.get("quantity").getAsInt();
-                
+
                 //if its the same amount just return the function
                 if(currQuantity != obj.quantity)
                     cartJSONObj.addProperty("quantity",obj.quantity);
-                
+
                 insert = false;
                 break;
             }
@@ -102,6 +102,32 @@ public class CartItemsSessionManagement implements ISessionManagement<List<Produ
 
         return editor.putString(SESSION_KEY,jsonArray.toString()).commit();
     }
+
+    public boolean updateProductQuantity(int productId,int quantity,boolean isIncrement) {
+        String json = sharedPreferences.getString(SESSION_KEY,DEFAULT_JSON_STRING);
+
+        JsonArray jsonArray = JsonParser.parseString(json).getAsJsonArray();
+
+        //find and edit
+
+        for(JsonElement element: jsonArray){
+            JsonObject cartJSONObj =element.getAsJsonObject();
+            if(cartJSONObj.get("id").getAsString().equals(String.valueOf(productId))){
+                int currQuantity = cartJSONObj.get("quantity").getAsInt();
+
+                if(isIncrement)
+                        cartJSONObj.addProperty("quantity", quantity+currQuantity);
+                else if (currQuantity != quantity)
+                    cartJSONObj.addProperty("quantity", quantity);
+
+                break;
+            }
+        }
+
+
+        return editor.putString(SESSION_KEY,jsonArray.toString()).commit();
+    }
+
 
     @NonNull
     private static JsonObject getJsonObject(Product obj) {

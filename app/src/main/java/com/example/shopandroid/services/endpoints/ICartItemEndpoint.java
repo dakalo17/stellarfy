@@ -3,6 +3,7 @@ package com.example.shopandroid.services.endpoints;
 import static com.example.shopandroid.utilities.Endpoints.DELETE_CART_PRODUCT;
 import static com.example.shopandroid.utilities.Endpoints.GET_CART_PRODUCTS;
 import static com.example.shopandroid.utilities.Endpoints.POST_CART_PRODUCT;
+import static com.example.shopandroid.utilities.Endpoints.PUT_CART_PRODUCT;
 
 import com.example.shopandroid.models.JSONObjects.AbstractResponse;
 import com.example.shopandroid.models.JSONObjects.CartItem;
@@ -30,6 +31,8 @@ public interface ICartItemEndpoint {
     @DELETE(DELETE_CART_PRODUCT)
     Call<AbstractResponse> deleteCartItem(@Path("productId") int productId);
 
+    @PUT(PUT_CART_PRODUCT)
+    Call<AbstractResponse> updateCartItemQuantity(@Path("productId") int productId,@Path("quantity") int quantity,@Path("isIncrement") boolean isIncrement);
     @GET(" ")
     Call<CartItem> getCartItem();
 

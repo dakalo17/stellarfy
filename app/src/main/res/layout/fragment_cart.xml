@@ -19,6 +19,99 @@
         android:orientation="vertical"
         android:layout_gravity="top"
         >
+        <com.google.android.material.card.MaterialCardView
+
+            android:id="@+id/mcvItem"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="5dp"
+
+            android:clickable="true"
+            android:focusable="true"
+            android:checkable="true"
+            app:cardElevation="10dp"
+            app:strokeColor="@color/material_on_surface_stroke"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="5dp"
+                >
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:layout_marginStart="8dp"
+
+                    >
+                    <TextView
+                        android:id="@+id/tvProductTitleCartItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:text="@string/app_name"
+                        android:textAppearance="?attr/textAppearanceCaption"
+
+
+                        />
+                    <TextView
+                        android:id="@+id/tvProductPriceCartItem"
+                        android:layout_below="@+id/tvProductTitleCartItem"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_name"
+                        android:textStyle="bold"
+
+                        android:textSize="12sp"
+                        android:layout_alignParentStart="true"
+
+                        />
+
+                    <com.google.android.material.textfield.TextInputLayout
+
+
+
+                        android:id="@+id/tvQuantityCartItemContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+
+                        app:helperText="qty"
+
+                        android:layout_below="@+id/tvProductPriceCartItem"
+                        app:boxCornerRadiusTopEnd="0dp"
+                        app:boxCornerRadiusTopStart="0dp"
+                        app:boxCornerRadiusBottomStart="0dp"
+                        app:boxCornerRadiusBottomEnd="0dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        >
+
+
+
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+                </RelativeLayout>
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,14 +153,6 @@
 
             />
 
-<!--        <com.google.android.material.loadingindicator.LoadingIndicator-->
-<!--            android:id="@+id/cartLoadingIndicator"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            app:indicatorSize="@android:dimen/thumbnail_width"-->
-
-<!--            />-->
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/cartLoadingIndicator"
             android:layout_width="wrap_content"

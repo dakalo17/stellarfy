@@ -9,9 +9,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.shopandroid.R;
 import com.example.shopandroid.activities.BottomNavigationActivity;
 import com.example.shopandroid.activities.LoginActivity;
 import com.example.shopandroid.adapters.CartItemsAdapter;
@@ -20,6 +23,9 @@ import com.example.shopandroid.models.JSONObjects.CartItem;
 import com.example.shopandroid.models.JSONObjects.Product;
 import com.example.shopandroid.services.endpoints.ICartItemEndpoint;
 import com.example.shopandroid.services.session.CartItemsSessionManagement;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
+import com.google.android.material.badge.ExperimentalBadgeUtils;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.util.ArrayList;
@@ -32,13 +38,13 @@ import retrofit2.Response;
 
 public class CartItemService extends BaseService<ICartItemEndpoint> {
     private static final String TAG = "Cart Item Service";
+    private static final int ONE_ITEM_AFFECTED = 1;
     private final Context _context;
-
-
 
     public CartItemService(Context context) {
         super(context, ICartItemEndpoint.class);
         _context = context;
+
     }
 
     public void getCartItemsMain(RecyclerView rvCartItems, RelativeLayout rlEmptyCart,
@@ -281,7 +287,7 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
 
                 var res = response.body();
                 //making sure exactly 1 row is affected
-                if(res != null && Integer.parseInt(res.response) == 1){
+                if(res != null && Integer.parseInt(res.response) == ONE_ITEM_AFFECTED){
                     //deleted
                     //swipe away
                     holder.mcvItem.setVisibility(View.GONE);
@@ -293,8 +299,11 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
 
                     if(sessionManagement.getSession().isEmpty()){
                         rlEmptyCart.setVisibility(View.VISIBLE);
+                        rvCartItems.setVisibility(View.GONE);
                     }else{
                         rvCartItems.setVisibility(View.VISIBLE);
+                        rlEmptyCart.setVisibility(View.GONE);
+
                     }
                 }
             }
@@ -305,11 +314,85 @@ public class CartItemService extends BaseService<ICartItemEndpoint> {
             }
         });
     }
+
+    public void updateCartItemQuantity(int productId,int quantity, boolean isIncrement, MenuItem topBarCartItem,FragmentActivity fragmentActivity){
+
+        Call<AbstractResponse> call = api.updateCartItemQuantity(productId,quantity,isIncrement);
+
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<AbstractResponse> call,@NonNull Response<AbstractResponse> response) {
+                if(!response.isSuccessful())return;
+
+                var res = response.body();
+                if(res == null)return;
+                if(Integer.parseInt(res.response) == ONE_ITEM_AFFECTED) {
+
+                    //save the new quantity
+                    CartItemsSessionManagement sessionManagement = new CartItemsSessionManagement(_context, false);
+                    sessionManagement.updateProductQuantity(productId, quantity, isIncrement);
+
+                    var cart = sessionManagement.isValidSessionReturn();
+
+
+
+                    if(cart.second) {
+                        fragmentActivity.invalidateOptionsMenu();
+//                        var total = getCountItems(cart.first);
+//                        //then refresh to show the quantity count
+//                        refreshTopBarQuantityIndicator(total,topBarCartItem,fragmentActivity);
+
+                    }
+//                    sessionManagement.deleteItem(productId);
+//
+//                    holder.mcvItem.setVisibility(View.GONE);
+//
+//                    if(sessionManagement.getSession().isEmpty()){
+//                        rlEmptyCart.setVisibility(View.VISIBLE);
+//                        rvCartItems.setVisibility(View.GONE);
+//
+//                    }else{
+//                        rvCartItems.setVisibility(View.VISIBLE);
+//                        rlEmptyCart.setVisibility(View.GONE);
+//
+//                    }
+
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AbstractResponse> call,@NonNull Throwable t) {
+                Log.e(TAG, Objects.requireNonNull(t.getLocalizedMessage()));
+
+            }
+        });
+    }
+
+    @OptIn(markerClass = ExperimentalBadgeUtils.class)
+    private void refreshTopBarQuantityIndicator(int total, MenuItem topBarCartItem,FragmentActivity parentActivity) {
+        if(topBarCartItem.getActionView() == null){
+            BadgeDrawable badgeDrawable = BadgeDrawable.create(context);
+
+            badgeDrawable.setNumber(total); // Set the cart count
+          //  badgeDrawable.setVisible(true); // Ensure the badge is visible
+           // badgeDrawable.setHorizontalOffset(55); // Adjust horizontal offset as needed
+           // badgeDrawable.setVerticalOffset(17);
+           // badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
+           // BadgeUtils.detachBadgeDrawable(badgeDrawable, parentActivity.findViewById(R.id.iCartWithBadge));
+           // BadgeUtils.attachBadgeDrawable(badgeDrawable, parentActivity.findViewById(R.id.iCartWithBadge), null);
+
+        }
+        //topBarCartItem.
+    }
+
     public void getCartItem(){
         Call<CartItem> call = api.getCartItem();
     }
 
+    //TODO - Ignore for now
     public void putCartItem(int cartId,CartItem cartItem){
-        Call<AbstractResponse> call = api.putCartItem(cartId,cartItem);
+        //Call<AbstractResponse> call = api.putCartItem(cartId,cartItem);
     }
 }

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/clCart"
 
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingStart="5dp"
     android:paddingEnd="5dp"
@@ -55,6 +55,7 @@
             >
             <ImageView
                 android:id="@+id/imgProductCartItem"
+                android:contentDescription="@string/todo"
                 android:src="@drawable/ic_catalogbg"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -127,18 +128,46 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnUpdateQuantity"
+                <com.google.android.material.button.MaterialButtonGroup
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/tvQuantityCartItemContainer"
-                    android:text="@string/update"
+                    >
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnUpdateQuantity"
+
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        app:icon="@drawable/update_cart"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@android:color/holo_green_dark"
+
+                        android:backgroundTint="@android:color/transparent"
+
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+
+                        />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDeleteCartItem"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        app:icon="@drawable/baseline_delete_forever_24"
+                        app:iconGravity="textStart"
+                        app:iconPadding="0dp"
+                        app:iconTint="@color/red"
+
+                        android:backgroundTint="@android:color/transparent"
+
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 
 
-                    />
+                        />
+                </com.google.android.material.button.MaterialButtonGroup>
+
 
 
             </RelativeLayout>

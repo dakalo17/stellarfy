@@ -46,6 +46,7 @@ public class CartFragment extends Fragment implements MenuProvider {
 
 
     private RelativeLayout rlEmptyCart;
+    private MenuItem _iCartWithBadge;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,7 +66,7 @@ public class CartFragment extends Fragment implements MenuProvider {
     @Override
     public void onStart() {
         super.onStart();
-        start(thisView);
+
     }
 
     private void init(View view) {
@@ -82,9 +83,10 @@ public class CartFragment extends Fragment implements MenuProvider {
 
     @Override
     public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-      //  menuInflater.inflate(R.menu.mn_top_navigation,menu);
-
-
+        //menuInflater.inflate(R.menu.mn_top_navigation,menu);
+        _iCartWithBadge = menu.findItem(R.id.iCartWithBadge);
+        start(thisView);
+        //requireActivity().invalidateOptionsMenu();
         CartItemsSessionManagement cartSess = new CartItemsSessionManagement(requireContext(),false);
         var cart = cartSess.isValidSessionReturn();
 
@@ -99,6 +101,13 @@ public class CartFragment extends Fragment implements MenuProvider {
               updateCartBadge(null/*cartBadgeItem*/,sum);
 
         }
+
+    }
+
+    @Override
+    public void onPrepareMenu(@NonNull Menu menu) {
+        MenuProvider.super.onPrepareMenu(menu);
+
 
     }
 
@@ -151,7 +160,9 @@ public class CartFragment extends Fragment implements MenuProvider {
             //   BadgeUtils.attachBadgeDrawable(badgeDrawable, cartIcon);
         } else {
             //  Attach the badge to the MenuItem icon
-            //    BadgeUtils.attachBadgeDrawable(badgeDrawable, findViewById(R.id.iCartWithBadge), null);
+            BadgeUtils.detachBadgeDrawable(badgeDrawable,requireActivity().findViewById(R.id.iCartWithBadge));
+            BadgeUtils.attachBadgeDrawable(badgeDrawable,
+                    requireActivity().findViewById(R.id.iCartWithBadge), null);
         }
 
 
@@ -185,12 +196,13 @@ public class CartFragment extends Fragment implements MenuProvider {
 
 
         CartItemsAdapter cartItemsAdapter =
-                new CartItemsAdapter(cart.first,requireContext(),rlEmptyCart,rvCartItems,requireActivity());
+                new CartItemsAdapter(cart.first,requireContext(),
+                        rlEmptyCart, rvCartItems,requireActivity(),_iCartWithBadge);
+
         cartItemsAdapter.updateData(cartItemSession.getSession());
 
         rvCartItems.setLayoutManager(gridLayoutManager);
         rvCartItems.setAdapter(cartItemsAdapter);
-
     }
 
     private void events(View view) {

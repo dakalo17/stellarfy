@@ -3,6 +3,7 @@ package com.example.shopandroid.adapters;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,10 +42,12 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
     private final RecyclerView _rvCartItems;
     private CartItemService _service;
 
-    private FragmentActivity _fragmentActivity;
+    private final FragmentActivity _fragmentActivity;
+    private final MenuItem _iCartWithBadge;
 
     public CartItemsAdapter(List<Product> products, Context context, RelativeLayout rlEmptyCart,
-                            RecyclerView rvCartItems,FragmentActivity fragmentActivity) {
+                            RecyclerView rvCartItems,
+                            FragmentActivity fragmentActivity, MenuItem iCartWithBadge) {
 
         _fragmentActivity = fragmentActivity;
 
@@ -54,6 +57,7 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
         _rlEmptyCart = rlEmptyCart;
         _rvCartItems = rvCartItems;
         _service = new CartItemService(_context);
+        _iCartWithBadge=iCartWithBadge;
 
     }
     public void removeProductFromCart(int position){
@@ -102,7 +106,8 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
 
 
             holder.btnUpdateQuantity.setOnClickListener(e->{
-                _fragmentActivity.invalidateOptionsMenu();
+
+
                 var cartItem = new CartItem();
 
                 cartItem.Quantity =
@@ -114,50 +119,62 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
 
 
                 //indicate that you are not inc or dec but replacing , eg. quantity = 8 not qu = 8 + 8
-                _service.postCartItemDelete(cartItem,true,position,this);
+                //_service.postCartItemDelete(cartItem,true,position,this);
+                if(cartItem.Quantity != 0) {
+                    _service.updateCartItemQuantity(_products.get(position).id, cartItem.Quantity, false,_iCartWithBadge,_fragmentActivity);
+                }
                 var cartSession = new CartItemsSessionManagement(_context,false);
                 var obj = cartSession.getSession();
             });
+            holder.btnDeleteCartItem.setOnClickListener(e->{
+                _fragmentActivity.invalidateOptionsMenu();
+//TODO
 
+               // _service.updateCartItemQuantity(_products.get(position).id,1,false,holder,_rlEmptyCart,_rvCartItems);
+
+            });
             //holder.clCart;
 
             makeSwipeFunc(holder,_products.get(position));
 
-            final int finalPosition = position;
-            Picasso.get().load(_products.get(position).imageLink).
-                    error(R.drawable.ic_catalogbg).
-                    fetch(new Callback() {
-                        @Override
-                        public void onSuccess() {
-
-
-                            Picasso.get().load(_products.get(finalPosition).imageLink).
-                                    error(R.drawable.ic_catalogbg).
-                                    into(holder.imgProductCartItem, new Callback() {
-                                        @Override
-                                        public void onSuccess() {
-
-                                        }
-
-                                        @Override
-                                        public void onError(Exception e) {
-                                            Log.e("Products catalog", Objects.requireNonNull(e.getLocalizedMessage()));
-                                            Toast.makeText(_context, "Error ->" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-
-                                        }
-                                    });
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e("Products catalog", e.getLocalizedMessage());
-                            Toast.makeText(_context, "Error ->" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
+            setCartItemImage(holder, position);
         }catch(Exception e){
             e.getLocalizedMessage();
         }
+    }
+
+    private void setCartItemImage(@NonNull CartItemViewHolder holder, int position) {
+        Picasso.get().load(_products.get(position).imageLink).
+                error(R.drawable.ic_catalogbg).
+                fetch(new Callback() {
+                    @Override
+                    public void onSuccess() {
+
+
+                        Picasso.get().load(_products.get(position).imageLink).
+                                error(R.drawable.ic_catalogbg).
+                                into(holder.imgProductCartItem, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        Log.e("Products catalog", Objects.requireNonNull(e.getLocalizedMessage()));
+                                        Toast.makeText(_context, "Error ->" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e("Products catalog", e.getLocalizedMessage());
+                        Toast.makeText(_context, "Error ->" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
     }
 
     public void deleteItemFromCart(int position) {
@@ -235,12 +252,13 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
         public TextInputEditText tvQuantityCartItem;
 
         public Button btnUpdateQuantity;
+        public Button btnDeleteCartItem;
 
         public CoordinatorLayout clCart;
         public MaterialCardView mcvItem;
         public ImageView imgSwipeDelete;
 
-        public BottomNavigationActivity bottomNavigationActivity;
+
 
         public CartItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -254,7 +272,7 @@ public class CartItemsAdapter extends RecyclerView.Adapter<CartItemsAdapter.Cart
             clCart = itemView.findViewById(R.id.clCart);
             mcvItem = itemView.findViewById(R.id.mcvItem);
             imgSwipeDelete = itemView.findViewById(R.id.imgSwipeDelete);
-
+            btnDeleteCartItem = itemView.findViewById(R.id.btnDeleteCartItem);
            // bottomNavigationActivity = itemView.findViewById(R.id.botNavSingleProduct);
         }
     }

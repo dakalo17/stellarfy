@@ -48,16 +48,30 @@
         <!--            android:layout_height="wrap_content"-->
         <!--            android:columnCount="3"-->
         <!--            >-->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCatalogCatalog"
 
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCatalogCatalog"
 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-            />
+                android:visibility="gone"
+                />
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/catalogLoadingIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:indicatorSize="@android:dimen/thumbnail_width"
+                android:indeterminate="true"
 
-
+                />
+        </LinearLayout>
         <!--            <com.google.android.material.card.MaterialCardView-->
         <!--                android:layout_width="0dp"-->
         <!--                android:layout_height="wrap_content"-->

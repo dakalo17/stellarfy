@@ -18,6 +18,7 @@ public class Endpoints {
     public static final String POST_CART_PRODUCT = CART_PRODUCT_CONTROLLER+"/PostCartItem";
     public static final String GET_CART_PRODUCTS = CART_PRODUCT_CONTROLLER+"/GetCartItems";
     public static final String DELETE_CART_PRODUCT = CART_PRODUCT_CONTROLLER + "/DeleteCartItem/{productId}";
+    public static final String PUT_CART_PRODUCT = CART_PRODUCT_CONTROLLER + "/PutCartItem/{productId}/{quantity}/{isIncrement}";
 
 
     public static final String BASE_URL="https://stable-frankly-marmoset.ngrok-free.app";

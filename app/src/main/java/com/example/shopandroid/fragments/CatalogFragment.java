@@ -20,6 +20,7 @@ import com.example.shopandroid.adapters.CatalogProductAdapter;
 import com.example.shopandroid.models.JSONObjects.Product;
 import com.example.shopandroid.services.implementations.ProductService;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -41,6 +42,7 @@ public class CatalogFragment extends Fragment {
     private ArrayList<Product> List;
     private MaterialToolbar topAppBar;
 
+    private CircularProgressIndicator _catalogLoadingIndicator;
     private static final int RECYCLER_VIEW_COLUMN_COUNT = 3;
     private ProductService productService;
     @Override
@@ -60,8 +62,8 @@ public class CatalogFragment extends Fragment {
 //                Log.e("FragmentA", "MenuItem for cart not found.");
 //            }
 //        }
-        populateProducts(view);
         init(view);
+        populateProducts(view);
         populateCartItems(view);
         events(view);
         start(view);
@@ -77,13 +79,13 @@ public class CatalogFragment extends Fragment {
         productService = new ProductService(this);
 
         rvCatalogCatalog = view.findViewById(R.id.rvCatalogCatalog);
-        productService.getProducts(rvCatalogCatalog,0);
+        productService.getProductsCatalog(rvCatalogCatalog,0,_catalogLoadingIndicator);
         
         
     }
 
     private void init(View view) {
-
+        _catalogLoadingIndicator = view.findViewById(R.id.catalogLoadingIndicator);
         
 
 
